@@ -1,0 +1,2064 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Resilient IoT — Dashboard SNCT 2026 | Monitoramento em Tempo Real</title>
+  <meta name="description"
+    content="Dashboard de espelhamento de topologia de rede IoT, monitoramento de sensores DHT22 e transmissão multiprotocolo MQTT / LoRa.">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link
+    href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;500;700&family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap"
+    rel="stylesheet">
+  <link rel="stylesheet" href="style.css">
+</head>
+
+<body>
+  <div class="app-container">
+    <!-- BARRA LATERAL (SIDEBAR) -->
+    <aside class="sidebar">
+      <div class="brand">
+        <div class="brand-icon">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"
+            stroke-linejoin="round">
+            <path d="M4.9 19.1C1 15.2 1 8.8 4.9 4.9" />
+            <path d="M7.8 16.2c-2.3-2.3-2.3-6.1 0-8.5" />
+            <circle cx="12" cy="12" r="2" />
+            <path d="M16.2 7.8c2.3 2.3 2.3 6.1 0 8.5" />
+            <path d="M19.1 4.9C23 8.8 23 15.2 19.1 19.1" />
+          </svg>
+        </div>
+        <div class="brand-text">
+          <h2>Resilient IoT</h2>
+          <span>SNCT 2026 · UFRPE/UABJ</span>
+        </div>
+      </div>
+
+      <nav class="nav-section">
+        <span class="nav-label">MONITORAMENTO</span>
+        <a href="#/dashboard" class="nav-item active" id="btn-nav-dashboard">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+            <rect x="3" y="3" width="7" height="7" rx="1.5" />
+            <rect x="14" y="3" width="7" height="7" rx="1.5" />
+            <rect x="14" y="14" width="7" height="7" rx="1.5" />
+            <rect x="3" y="14" width="7" height="7" rx="1.5" />
+          </svg>
+          <span>Dashboard</span>
+        </a>
+
+        <span class="nav-label">COMPONENTES</span>
+        <a href="#/devices" class="nav-item" id="btn-nav-devices">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+            <rect x="4" y="4" width="16" height="16" rx="2" />
+            <rect x="9" y="9" width="6" height="6" />
+            <path d="M9 1v3M15 1v3M9 20v3M15 20v3M20 9h3M20 14h3M1 9h3M1 14h3" />
+          </svg>
+          <span>Dispositivos</span>
+          <span class="badge count">2</span>
+        </a>
+        <a href="#/servers" class="nav-item" id="btn-nav-servers">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+            <rect x="2" y="2" width="20" height="8" rx="2" />
+            <rect x="2" y="14" width="20" height="8" rx="2" />
+            <line x1="6" y1="6" x2="6.01" y2="6" />
+            <line x1="6" y1="18" x2="6.01" y2="18" />
+          </svg>
+          <span>Servidores</span>
+          <span class="badge count">1</span>
+        </a>
+        <a href="#/clients" class="nav-item" id="btn-nav-clients">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+            <path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2" />
+            <circle cx="9" cy="7" r="4" />
+            <path d="M23 21v-2a4 4 0 0 0-3-3.87" />
+            <path d="M16 3.13a4 4 0 0 1 0 7.75" />
+          </svg>
+          <span>Clientes</span>
+          <span class="badge count">4</span>
+        </a>
+
+        <span class="nav-label">SISTEMA</span>
+        <a href="#/chaos" class="nav-item" id="btn-nav-chaos">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+            <path
+              d="M8.5 14.5A2.5 2.5 0 0 0 11 12c0-1.38-.5-2-1-3-1.072-2.143-.224-4.054 2-6 .5 2.5 2 4.9 4 6.5 2 1.6 3 3.5 3 5.5a7 7 0 1 1-14 0c0-1.153.433-2.294 1-3a2.5 2.5 0 0 0 2.5 3z" />
+          </svg>
+          <span>Chaos Engineering</span>
+        </a>
+        <a href="#/logs" class="nav-item" id="btn-nav-logs">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+            <polyline points="4 17 10 11 4 5" />
+            <line x1="12" y1="19" x2="20" y2="19" />
+          </svg>
+          <span>Logs</span>
+        </a>
+      </nav>
+
+      <div class="sidebar-footer">
+        <span class="version-tag">v1.0.0 · IoT Multiprotocolo</span>
+      </div>
+    </aside>
+
+    <!-- CONTEÚDO PRINCIPAL -->
+    <main class="main-content">
+      <!-- CABEÇALHO SUPERIOR -->
+      <header class="topbar">
+        <div class="topbar-title">
+          <h1 id="page-title">Dashboard</h1>
+          <p id="system-time-display">Monitoramento em tempo real — <span id="current-timestamp">2026-10-26
+              23:40:00</span> · <span id="speed-label">1x</span></p>
+        </div>
+
+        <div class="topbar-controls">
+          <div class="status-pill online" id="status-pill">
+            <span class="status-dot"></span>
+            <span id="status-pill-text">Sistema Online</span>
+          </div>
+
+          <!-- CONTROLES DE SIMULAÇÃO / FLUXO -->
+          <div class="playback-controls">
+            <button class="btn-ctrl active" id="btn-play" title="Iniciar/Continuar fluxo de pacotes">
+              <svg viewBox="0 0 24 24" fill="currentColor">
+                <polygon points="5 3 19 12 5 21 5 3" />
+              </svg>
+            </button>
+            <button class="btn-ctrl" id="btn-pause" title="Pausar fluxo de dados">
+              <svg viewBox="0 0 24 24" fill="currentColor">
+                <rect x="6" y="4" width="4" height="16" />
+                <rect x="14" y="4" width="4" height="16" />
+              </svg>
+            </button>
+            <button class="btn-ctrl" id="btn-stop" title="Zerar contadores e limpar buffer">
+              <svg viewBox="0 0 24 24" fill="currentColor">
+                <rect x="5" y="5" width="14" height="14" rx="2" />
+              </svg>
+            </button>
+            <button class="btn-speed" id="btn-speed" title="Alternar velocidade da simulação">1x</button>
+          </div>
+
+          <div class="extra-actions">
+            <button class="btn-icon" id="btn-connect-esp" title="Conectar ao ESP32 físico na rede">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                <circle cx="12" cy="12" r="3" />
+                <path
+                  d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 0 1 0 2.83 2 2 0 0 1-2.83 0l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-2 2 2 2 0 0 1-2-2v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 0 1-2.83 0 2 2 0 0 1 0-2.83l.06-.06a1.65 1.65 0 0 0 .33-1.82 1.65 1.65 0 0 0-1.51-1H3a2 2 0 0 1-2-2 2 2 0 0 1 2-2h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 0 1 0-2.83 2 2 0 0 1 2.83 0l.06.06a1.65 1.65 0 0 0 1.82.33H9a1.65 1.65 0 0 0 1-1.51V3a2 2 0 0 1 2-2 2 2 0 0 1 2 2v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 0 1 2.83 0 2 2 0 0 1 0 2.83l-.06.06a1.65 1.65 0 0 0-.33 1.82V9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 0 1 2 2 2 2 0 0 1-2 2h-.09a1.65 1.65 0 0 0-1.51 1z" />
+              </svg>
+            </button>
+            <button class="btn-icon" id="btn-docs" title="Documentação do Projeto SNCT">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                <path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z" />
+                <polyline points="14 2 14 8 20 8" />
+                <line x1="16" y1="13" x2="8" y2="13" />
+                <line x1="16" y1="17" x2="8" y2="17" />
+              </svg>
+            </button>
+          </div>
+        </div>
+      </header>
+
+      <!-- VIEW: DASHBOARD (PRINCIPAL) -->
+      <div id="view-dashboard" class="spa-view active">
+        <!-- CARDS DE MÉTRICAS RÁPIDAS (TOPO) -->
+        <section class="metrics-row">
+          <!-- TEMPERATURA (DHT22) -->
+          <div class="metric-card interactive" id="metric-temp" onclick="abrirDetalheSensor('temp')">
+            <div class="metric-header">
+              <div class="metric-icon temp">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                  <path d="M14 14.8V5a2 2 0 0 0-4 0v9.8a4 4 0 1 0 4 0z" />
+                </svg>
+              </div>
+              <span class="metric-tag">DHT22</span>
+            </div>
+            <div class="metric-body">
+              <div class="metric-value" id="val-temp">--<span class="unit">°C</span></div>
+              <div class="metric-label">TEMPERATURA</div>
+            </div>
+            <div class="metric-footer">
+              <span class="metric-hint">Clique para inspecionar</span>
+              <span class="live-pulse"></span>
+            </div>
+          </div>
+
+          <!-- UMIDADE (DHT22) -->
+          <div class="metric-card interactive" id="metric-umid" onclick="abrirDetalheSensor('umid')">
+            <div class="metric-header">
+              <div class="metric-icon umid">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                  <path d="M12 3s6 6.5 6 11a6 6 0 0 1-12 0c0-4.5 6-11 6-11z" />
+                </svg>
+              </div>
+              <span class="metric-tag">DHT22</span>
+            </div>
+            <div class="metric-body">
+              <div class="metric-value" id="val-umid">--<span class="unit">%</span></div>
+              <div class="metric-label">UMIDADE</div>
+            </div>
+            <div class="metric-footer">
+              <span class="metric-hint">Clique para inspecionar</span>
+              <span class="live-pulse"></span>
+            </div>
+          </div>
+
+          <!-- LUMINOSIDADE (LDR / LUX) -->
+          <div class="metric-card interactive" id="metric-lux" onclick="abrirDetalheSensor('lux')">
+            <div class="metric-header">
+              <div class="metric-icon lux">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                  <circle cx="12" cy="12" r="5" />
+                  <line x1="12" y1="1" x2="12" y2="3" />
+                  <line x1="12" y1="21" x2="12" y2="23" />
+                  <line x1="4.22" y1="4.22" x2="5.64" y2="5.64" />
+                  <line x1="18.36" y1="18.36" x2="19.78" y2="19.78" />
+                  <line x1="1" y1="12" x2="3" y2="12" />
+                  <line x1="21" y1="12" x2="23" y2="12" />
+                  <line x1="4.22" y1="19.78" x2="5.64" y2="18.36" />
+                  <line x1="18.36" y1="5.64" x2="19.78" y2="4.22" />
+                </svg>
+              </div>
+              <span class="metric-tag">LDR</span>
+            </div>
+            <div class="metric-body">
+              <div class="metric-value" id="val-lux">--<span class="unit">Lux</span></div>
+              <div class="metric-label">LUMINOSIDADE</div>
+            </div>
+            <div class="metric-footer">
+              <span class="metric-hint">Clique para inspecionar</span>
+            </div>
+          </div>
+
+          <!-- PACOTES ENVIADOS -->
+          <div class="metric-card" id="metric-packets">
+            <div class="metric-header">
+              <div class="metric-icon packets">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                  <line x1="16.5" y1="9.4" x2="7.5" y2="4.21" />
+                  <path
+                    d="M21 16V8a2 2 0 0 0-1-1.73l-7-4a2 2 0 0 0-2 0l-7 4A2 2 0 0 0 3 8v8a2 2 0 0 0 1 1.73l7 4a2 2 0 0 0 2 0l7-4A2 2 0 0 0 21 16z" />
+                  <polyline points="3.27 6.96 12 12.01 20.73 6.96" />
+                  <line x1="12" y1="22.08" x2="12" y2="12" />
+                </svg>
+              </div>
+              <span class="metric-tag">MQTT + LoRa</span>
+            </div>
+            <div class="metric-body">
+              <div class="metric-value" id="val-packets">0</div>
+              <div class="metric-label">PACOTES ENVIADOS</div>
+            </div>
+            <div class="metric-footer">
+              <span class="metric-trend up">↑ <span id="val-packet-rate">1.0</span> pkt/s</span>
+            </div>
+          </div>
+
+          <!-- TAXA DE ENTREGA -->
+          <div class="metric-card" id="metric-delivery">
+            <div class="metric-header">
+              <div class="metric-icon success">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                  <path d="M22 11.08V12a10 10 0 1 1-5.93-9.14" />
+                  <polyline points="22 4 12 14.01 9 11.01" />
+                </svg>
+              </div>
+              <span class="metric-tag">QoS 1</span>
+            </div>
+            <div class="metric-body">
+              <div class="metric-value" id="val-delivery">100.0<span class="unit">%</span></div>
+              <div class="metric-label">TAXA DE ENTREGA</div>
+            </div>
+            <div class="metric-footer">
+              <span class="metric-trend success">Perda zero</span>
+            </div>
+          </div>
+
+          <!-- SAÚDE DO SISTEMA -->
+          <div class="metric-card health-card" id="metric-health">
+            <div class="health-icon">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                <polyline points="22 12 18 12 15 21 9 3 6 12 2 12" />
+              </svg>
+            </div>
+            <div class="health-info">
+              <h3 id="health-title">SAUDÁVEL</h3>
+              <p>SAÚDE DO SISTEMA</p>
+            </div>
+          </div>
+        </section>
+
+        <!-- SEÇÃO CENTRAL: TOPOLOGIA DE REDE + CARDS LATERAIS -->
+        <div class="middle-layout">
+          <!-- CARD DA TOPOLOGIA DE REDE (ESPELHAMENTO VISUAL) -->
+          <section class="topology-container card-panel">
+            <div class="topology-header">
+              <div class="topology-title">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                  <rect x="2" y="3" width="6" height="6" rx="1" />
+                  <rect x="16" y="3" width="6" height="6" rx="1" />
+                  <rect x="9" y="15" width="6" height="6" rx="1" />
+                  <path d="M5 9v3a2 2 0 0 0 2 2h10a2 2 0 0 0 2-2V9" />
+                  <path d="M12 12v3" />
+                </svg>
+                <h2>TOPOLOGIA DE REDE</h2>
+              </div>
+              <div class="topology-protocols">
+                <span class="protocol-badge mqtt active">
+                  <span class="dot"></span> MQTT
+                </span>
+                <span class="protocol-badge lora">
+                  <span class="dot"></span> LORA
+                </span>
+              </div>
+            </div>
+
+            <div class="topology-stage" id="topology-stage">
+              <!-- CANVAS PARA DESENHO DAS ARESTAS E PACOTES ANIMADOS -->
+              <canvas id="topology-canvas"></canvas>
+
+              <!-- COLUNA 1: PERCEPÇÃO -->
+              <div class="topo-layer perception-layer">
+                <span class="layer-title">PERCEPÇÃO</span>
+                <div class="sensor-nodes-group">
+                  <!-- Sensores DEV-01 (ESP32) -->
+                  <div class="node-wrapper" data-node="node-temp-1">
+                    <div class="topo-node sensor-node" id="node-temp-1" onclick="abrirDetalheSensor('temp')">
+                      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                        <path d="M14 14.8V5a2 2 0 0 0-4 0v9.8a4 4 0 1 0 4 0z" />
+                      </svg>
+                    </div>
+                    <span class="node-name">Temp</span>
+                    <span class="node-tag">DHT22</span>
+                  </div>
+
+                  <div class="node-wrapper" data-node="node-umid-1">
+                    <div class="topo-node sensor-node" id="node-umid-1" onclick="abrirDetalheSensor('umid')">
+                      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                        <path d="M12 3s6 6.5 6 11a6 6 0 0 1-12 0c0-4.5 6-11 6-11z" />
+                      </svg>
+                    </div>
+                    <span class="node-name">Umid</span>
+                    <span class="node-tag">DHT22</span>
+                  </div>
+
+                  <div class="node-wrapper" data-node="node-lux-1">
+                    <div class="topo-node sensor-node" id="node-lux-1" onclick="abrirDetalheSensor('lux')">
+                      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                        <circle cx="12" cy="12" r="5" />
+                        <line x1="12" y1="1" x2="12" y2="3" />
+                        <line x1="12" y1="21" x2="12" y2="23" />
+                        <line x1="4.22" y1="4.22" x2="5.64" y2="5.64" />
+                        <line x1="18.36" y1="18.36" x2="19.78" y2="19.78" />
+                      </svg>
+                    </div>
+                    <span class="node-name">Lux</span>
+                    <span class="node-tag">LDR</span>
+                  </div>
+
+                  <div class="layer-divider"></div>
+
+                  <!-- Sensores DEV-02 (Arduino) -->
+                  <div class="node-wrapper" data-node="node-temp-2">
+                    <div class="topo-node sensor-node" id="node-temp-2" onclick="abrirDetalheSensor('temp2')">
+                      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                        <path d="M14 14.8V5a2 2 0 0 0-4 0v9.8a4 4 0 1 0 4 0z" />
+                      </svg>
+                    </div>
+                    <span class="node-name">Temp</span>
+                    <span class="node-tag">DHT11</span>
+                  </div>
+
+                  <div class="node-wrapper" data-node="node-umid-2">
+                    <div class="topo-node sensor-node" id="node-umid-2" onclick="abrirDetalheSensor('umid2')">
+                      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                        <path d="M12 3s6 6.5 6 11a6 6 0 0 1-12 0c0-4.5 6-11 6-11z" />
+                      </svg>
+                    </div>
+                    <span class="node-name">Umid</span>
+                    <span class="node-tag">DHT11</span>
+                  </div>
+
+                  <div class="node-wrapper" data-node="node-lux-2">
+                    <div class="topo-node sensor-node" id="node-lux-2" onclick="abrirDetalheSensor('lux2')">
+                      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                        <circle cx="12" cy="12" r="5" />
+                        <line x1="12" y1="1" x2="12" y2="3" />
+                        <line x1="12" y1="21" x2="12" y2="23" />
+                        <line x1="4.22" y1="4.22" x2="5.64" y2="5.64" />
+                        <line x1="18.36" y1="18.36" x2="19.78" y2="19.78" />
+                      </svg>
+                    </div>
+                    <span class="node-name">Lux</span>
+                    <span class="node-tag">LDR</span>
+                  </div>
+                </div>
+              </div>
+
+              <!-- COLUNA 2: COMUNICAÇÃO (DISPOSITIVOS DE BORDA) -->
+              <div class="topo-layer communication-layer">
+                <span class="layer-title">COMUNICAÇÃO</span>
+                <div class="comm-nodes-group">
+                  <!-- DEV-01: ESP32 -->
+                  <div class="node-wrapper dev-wrapper" data-node="node-dev-01">
+                    <div class="topo-node dev-node active-dev" id="node-dev-01" onclick="abrirDetalheDev('DEV-01')">
+                      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                        <rect x="4" y="4" width="16" height="16" rx="2" />
+                        <rect x="9" y="9" width="6" height="6" />
+                        <path d="M9 1v3M15 1v3M9 20v3M15 20v3M20 9h3M20 14h3M1 9h3M1 14h3" />
+                      </svg>
+                    </div>
+                    <span class="node-name primary">DEV-01</span>
+                    <span class="node-sub">ESP32</span>
+                  </div>
+
+                  <!-- DEV-02: Arduino -->
+                  <div class="node-wrapper dev-wrapper" data-node="node-dev-02">
+                    <div class="topo-node dev-node active-dev" id="node-dev-02" onclick="abrirDetalheDev('DEV-02')">
+                      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                        <rect x="4" y="4" width="16" height="16" rx="2" />
+                        <circle cx="9" cy="9" r="1.5" />
+                        <circle cx="15" cy="15" r="1.5" />
+                        <path d="M15 9l-6 6" />
+                      </svg>
+                    </div>
+                    <span class="node-name primary">DEV-02</span>
+                    <span class="node-sub">Arduino</span>
+                  </div>
+                </div>
+              </div>
+
+              <!-- COLUNA 3: PROCESSAMENTO & TRANSPORTE -->
+              <div class="topo-layer processing-layer">
+                <span class="layer-title">PROCESSAMENTO</span>
+                <div class="proc-nodes-group">
+                  <!-- Mosquitto (Broker MQTT) -->
+                  <div class="node-wrapper proc-wrapper" data-node="node-mosquitto">
+                    <div class="topo-node broker-node" id="node-mosquitto" onclick="abrirDetalheBroker('Mosquitto')">
+                      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                        <path d="M5 12.55a11 11 0 0 1 14.08 0" />
+                        <path d="M1.42 9a16 16 0 0 1 21.16 0" />
+                        <path d="M8.53 16.11a6 6 0 0 1 6.95 0" />
+                        <line x1="12" y1="20" x2="12.01" y2="20" />
+                      </svg>
+                    </div>
+                    <span class="node-name accent-green">Mosquitto</span>
+                    <span class="node-sub">Broker MQTT</span>
+                  </div>
+
+                  <!-- Bridge MQTT -->
+                  <div class="node-wrapper proc-wrapper" data-node="node-bridge">
+                    <div class="topo-node bridge-node" id="node-bridge">
+                      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                        <circle cx="18" cy="5" r="3" />
+                        <circle cx="6" cy="19" r="3" />
+                        <line x1="8.59" y1="13.51" x2="15.42" y2="10.49" />
+                      </svg>
+                    </div>
+                    <span class="node-name">Bridge</span>
+                    <span class="node-sub">MQTT</span>
+                  </div>
+
+                  <!-- Gateway LoRa -->
+                  <div class="node-wrapper proc-wrapper" data-node="node-gateway">
+                    <div class="topo-node gateway-node" id="node-gateway">
+                      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                        <path d="M4.9 19.1C1 15.2 1 8.8 4.9 4.9" />
+                        <path d="M7.8 16.2c-2.3-2.3-2.3-6.1 0-8.5" />
+                        <circle cx="12" cy="12" r="2" />
+                        <path d="M16.2 7.8c2.3 2.3 2.3 6.1 0 8.5" />
+                        <path d="M19.1 4.9C23 8.8 23 15.2 19.1 19.1" />
+                      </svg>
+                    </div>
+                    <span class="node-name accent-amber">Gateway</span>
+                    <span class="node-sub">LoRa</span>
+                  </div>
+
+                  <!-- Net Server LoRaWAN -->
+                  <div class="node-wrapper proc-wrapper" data-node="node-netserver">
+                    <div class="topo-node netserver-node" id="node-netserver">
+                      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                        <rect x="2" y="3" width="6" height="6" rx="1" />
+                        <rect x="16" y="3" width="6" height="6" rx="1" />
+                        <rect x="9" y="15" width="6" height="6" rx="1" />
+                        <path d="M5 9v3a2 2 0 0 0 2 2h10a2 2 0 0 0 2-2V9" />
+                        <path d="M12 12v3" />
+                      </svg>
+                    </div>
+                    <span class="node-name">Net Server</span>
+                  </div>
+                </div>
+              </div>
+
+              <!-- COLUNA 4: APLICAÇÃO (PIPELINE & CLIENTES FINAIS) -->
+              <div class="topo-layer application-layer">
+                <span class="layer-title">APLICAÇÃO</span>
+                <div class="app-nodes-layout">
+                  <!-- Servidor Central SRV-01 -->
+                  <div class="srv-center-wrapper" data-node="node-srv-01">
+                    <div class="topo-node srv-node" id="node-srv-01" onclick="abrirDetalhePipeline()">
+                      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                        <rect x="2" y="2" width="20" height="8" rx="2" />
+                        <rect x="2" y="14" width="20" height="8" rx="2" />
+                        <line x1="6" y1="6" x2="6.01" y2="6" />
+                        <line x1="6" y1="18" x2="6.01" y2="18" />
+                      </svg>
+                    </div>
+                    <span class="node-name accent-blue">SRV-01</span>
+                    <span class="node-sub">Pipeline Ingestão</span>
+                  </div>
+
+                  <!-- Clientes Finais Inscritos -->
+                  <div class="clients-column">
+                    <div class="node-wrapper client-wrapper" data-node="node-client-gerencia">
+                      <div class="topo-node client-node" id="node-client-gerencia" onclick="navegarPara('#/device/PC-GER-01')">
+                        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                          <line x1="18" y1="20" x2="18" y2="10" />
+                          <line x1="12" y1="20" x2="12" y2="4" />
+                          <line x1="6" y1="20" x2="6" y2="14" />
+                        </svg>
+                      </div>
+                      <span class="node-name client-name">Gerência</span>
+                    </div>
+
+                    <div class="node-wrapper client-wrapper" data-node="node-client-analista">
+                      <div class="topo-node client-node" id="node-client-analista" onclick="navegarPara('#/device/PC-ANA-01')">
+                        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                          <polyline points="23 6 13.5 15.5 8.5 10.5 1 18" />
+                          <polyline points="17 6 23 6 23 12" />
+                        </svg>
+                      </div>
+                      <span class="node-name client-name">Analista</span>
+                    </div>
+
+                    <div class="node-wrapper client-wrapper" data-node="node-client-tecnico">
+                      <div class="topo-node client-node" id="node-client-tecnico" onclick="navegarPara('#/device/PC-TEC-01')">
+                        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                          <path
+                            d="M14.7 6.3a1 1 0 0 0 0 1.4l1.6 1.6a1 1 0 0 0 1.4 0l3.77-3.77a6 6 0 0 1-7.94 7.94l-6.91 6.91a2.12 2.12 0 0 1-3-3l6.91-6.91a6 6 0 0 1 7.94-7.94l-3.76 3.76z" />
+                        </svg>
+                      </div>
+                      <span class="node-name client-name">Técnico</span>
+                    </div>
+
+                    <div class="node-wrapper client-wrapper" data-node="node-client-estranho">
+                      <div class="topo-node client-node unauth" id="node-client-estranho" onclick="navegarPara('#/device/PC-EST-01')">
+                        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                          <path
+                            d="M17.94 17.94A10.07 10.07 0 0 1 12 20c-7 0-11-8-11-8a18.45 18.45 0 0 1 5.06-5.94M9.9 4.24A9.12 9.12 0 0 1 12 4c7 0 11 8 11 8a18.5 18.5 0 0 1-2.16 3.19m-6.72-1.07a3 3 0 1 1-4.24-4.24" />
+                          <line x1="1" y1="1" x2="23" y2="23" />
+                        </svg>
+                      </div>
+                      <span class="node-name client-name">Estranho</span>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </section>
+
+          <!-- COLUNA LATERAL DIREITA: DISPOSITIVOS & TRANSPORTE -->
+          <aside class="right-panel">
+            <!-- CARD DE DISPOSITIVOS -->
+            <div class="card-panel devices-card">
+              <div class="panel-header">
+                <div class="panel-title">
+                  <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                    <rect x="4" y="4" width="16" height="16" rx="2" />
+                    <rect x="9" y="9" width="6" height="6" />
+                    <path d="M9 1v3M15 1v3M9 20v3M15 20v3M20 9h3M20 14h3M1 9h3M1 14h3" />
+                  </svg>
+                  <h3>DISPOSITIVOS</h3>
+                </div>
+              </div>
+
+              <div class="device-list">
+                <!-- DISPOSITIVO DEV-01: ESP32 -->
+                <div class="device-item active" id="item-dev-01" onclick="abrirDetalheDev('DEV-01')">
+                  <div class="device-avatar esp32">
+                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                      <rect x="4" y="4" width="16" height="16" rx="2" />
+                      <rect x="9" y="9" width="6" height="6" />
+                    </svg>
+                  </div>
+                  <div class="device-info">
+                    <div class="device-name-row">
+                      <span class="device-id">DEV-01</span>
+                      <span class="badge-status online">NORMAL</span>
+                      <span class="badge-protocol">MQTT</span>
+                    </div>
+                    <span class="device-model">ESP32 (D5: DHT22, D25-D27: LEDs)</span>
+                  </div>
+                  <div class="device-counters">
+                    <div class="counter-col">
+                      <strong id="dev1-sent">408</strong>
+                      <small>enviados</small>
+                    </div>
+                    <div class="counter-col">
+                      <strong id="dev1-buffer">0</strong>
+                      <small>buffer</small>
+                    </div>
+                  </div>
+                </div>
+
+                <!-- DISPOSITIVO DEV-02: ARDUINO -->
+                <div class="device-item" id="item-dev-02" onclick="abrirDetalheDev('DEV-02')">
+                  <div class="device-avatar arduino">
+                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                      <circle cx="12" cy="12" r="10" />
+                      <line x1="8" y1="12" x2="16" y2="12" />
+                      <line x1="12" y1="8" x2="12" y2="16" />
+                    </svg>
+                  </div>
+                  <div class="device-info">
+                    <div class="device-name-row">
+                      <span class="device-id">DEV-02</span>
+                      <span class="badge-status online">NORMAL</span>
+                      <span class="badge-protocol">MQTT</span>
+                    </div>
+                    <span class="device-model">ARDUINO · UNO R4 Wi-Fi</span>
+                  </div>
+                  <div class="device-counters">
+                    <div class="counter-col">
+                      <strong id="dev2-sent">408</strong>
+                      <small>enviados</small>
+                    </div>
+                    <div class="counter-col">
+                      <strong id="dev2-buffer">0</strong>
+                      <small>buffer</small>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+
+            <!-- CARD DE TRANSPORTE / ROTA ATIVA -->
+            <div class="card-panel transport-card">
+              <div class="panel-header">
+                <div class="panel-title">
+                  <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                    <path d="M18 8A6 6 0 0 0 6 8c0 7-3 9-3 9h18s-3-2-3-9" />
+                    <path d="M13.73 21a2 2 0 0 1-3.46 0" />
+                  </svg>
+                  <h3>TRANSPORTE</h3>
+                </div>
+              </div>
+
+              <div class="transport-routes">
+                <div class="route-item active" id="route-a">
+                  <div class="route-icon-box">
+                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                      <path d="M5 12.55a11 11 0 0 1 14.08 0" />
+                      <path d="M1.42 9a16 16 0 0 1 21.16 0" />
+                      <path d="M8.53 16.11a6 6 0 0 1 6.95 0" />
+                      <line x1="12" y1="20" x2="12.01" y2="20" />
+                    </svg>
+                  </div>
+                  <div class="route-details">
+                    <div class="route-title">
+                      <strong>Caminho A — MQTT</strong>
+                      <span class="badge-active">ATIVO</span>
+                    </div>
+                    <span class="route-path">Wi-Fi → Mosquitto → SRV</span>
+                  </div>
+                </div>
+
+                <div class="route-item standby" id="route-b">
+                  <div class="route-icon-box">
+                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                      <path d="M4.9 19.1C1 15.2 1 8.8 4.9 4.9" />
+                      <circle cx="12" cy="12" r="2" />
+                      <path d="M19.1 4.9C23 8.8 23 15.2 19.1 19.1" />
+                    </svg>
+                  </div>
+                  <div class="route-details">
+                    <div class="route-title">
+                      <strong>Caminho B — LoRaWAN</strong>
+                      <span class="badge-standby">STANDBY</span>
+                    </div>
+                    <span class="route-path">LoRa → Gateway → Bridge</span>
+                  </div>
+                </div>
+              </div>
+
+              <!-- CONTROLE DE FALHA (CHAOS SIMULATOR) -->
+              <div class="chaos-toggle-box">
+                <button class="btn-chaos" id="btn-toggle-chaos" onclick="alternarFalhaWiFi()">
+                  <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                    <path d="M18.36 6.64a9 9 0 1 1-12.73 0" />
+                    <line x1="12" y1="2" x2="12" y2="12" />
+                  </svg>
+                  <span>Simular Queda de Wi-Fi / Failover</span>
+                </button>
+              </div>
+            </div>
+          </aside>
+        </div>
+      </div> <!-- FIM VIEW: DASHBOARD -->
+
+      <!-- VIEW: DISPOSITIVOS (CATÁLOGO / LISTAGEM) -->
+      <section id="view-devices" class="spa-view" style="display: none;">
+        <div class="devices-page-header">
+          <div class="devices-header-left">
+            <div class="devices-header-icon">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                <rect x="4" y="4" width="16" height="16" rx="2" />
+                <rect x="9" y="9" width="6" height="6" />
+                <path d="M9 1v3M15 1v3M9 20v3M15 20v3M20 9h3M20 14h3M1 9h3M1 14h3" />
+              </svg>
+            </div>
+            <h2>Dispositivos</h2>
+          </div>
+          <div class="devices-count-pill">
+            <span id="registered-devices-count">2 REGISTRADOS</span>
+          </div>
+        </div>
+
+        <div class="devices-catalog-grid">
+          <!-- DEV-01: ESP32 -->
+          <div class="device-catalog-card" id="catalog-dev-01" onclick="navegarPara('#/device/DEV-01')">
+            <div class="catalog-card-header">
+              <div class="catalog-card-identity">
+                <div class="catalog-avatar esp32">
+                  <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                    <rect x="4" y="4" width="16" height="16" rx="2" />
+                    <rect x="9" y="9" width="6" height="6" />
+                    <path d="M9 1v3M15 1v3M9 20v3M15 20v3M20 9h3M20 14h3M1 9h3M1 14h3" />
+                  </svg>
+                </div>
+                <div class="catalog-info-col">
+                  <div class="catalog-title-row">
+                    <span class="catalog-device-name">DEV-01</span>
+                  </div>
+                  <span class="catalog-device-sub">ESP32 · Boot: <span id="cat-dev1-boot">e76e1f94</span></span>
+                </div>
+              </div>
+              <div class="catalog-status-badge normal" id="cat-dev1-status">NORMAL</div>
+            </div>
+            <div class="catalog-metrics-grid">
+              <div class="catalog-metric-item">
+                <strong class="metric-big-num" id="cat-dev1-sent">453</strong>
+                <span class="metric-sub-label">ENVIADOS</span>
+              </div>
+              <div class="catalog-metric-item">
+                <strong class="metric-big-num" id="cat-dev1-failures">0</strong>
+                <span class="metric-sub-label">FALHAS</span>
+              </div>
+              <div class="catalog-metric-item">
+                <strong class="metric-big-num" id="cat-dev1-buffer">100%</strong>
+                <span class="metric-sub-label">BUFFER</span>
+              </div>
+              <div class="catalog-metric-item">
+                <strong class="metric-big-num" id="cat-dev1-path">MQTT</strong>
+                <span class="metric-sub-label">CAMINHO</span>
+              </div>
+            </div>
+          </div>
+
+          <!-- DEV-02: ARDUINO -->
+          <div class="device-catalog-card" id="catalog-dev-02" onclick="navegarPara('#/device/DEV-02')">
+            <div class="catalog-card-header">
+              <div class="catalog-card-identity">
+                <div class="catalog-avatar arduino">
+                  <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                    <circle cx="12" cy="12" r="10" />
+                    <line x1="8" y1="12" x2="16" y2="12" />
+                    <line x1="12" y1="8" x2="12" y2="16" />
+                  </svg>
+                </div>
+                <div class="catalog-info-col">
+                  <div class="catalog-title-row">
+                    <span class="catalog-device-name">DEV-02</span>
+                  </div>
+                  <span class="catalog-device-sub">ARDUINO · Boot: <span id="cat-dev2-boot">3fa414fc</span></span>
+                </div>
+              </div>
+              <div class="catalog-status-badge normal" id="cat-dev2-status">NORMAL</div>
+            </div>
+            <div class="catalog-metrics-grid">
+              <div class="catalog-metric-item">
+                <strong class="metric-big-num" id="cat-dev2-sent">453</strong>
+                <span class="metric-sub-label">ENVIADOS</span>
+              </div>
+              <div class="catalog-metric-item">
+                <strong class="metric-big-num" id="cat-dev2-failures">0</strong>
+                <span class="metric-sub-label">FALHAS</span>
+              </div>
+              <div class="catalog-metric-item">
+                <strong class="metric-big-num" id="cat-dev2-buffer">100%</strong>
+                <span class="metric-sub-label">BUFFER</span>
+              </div>
+              <div class="catalog-metric-item">
+                <strong class="metric-big-num" id="cat-dev2-path">MQTT</strong>
+                <span class="metric-sub-label">CAMINHO</span>
+              </div>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <!-- VIEW: DETALHES DO DISPOSITIVO -->
+      <section id="view-device-detail" class="spa-view" style="display: none;">
+        <div class="device-detail-top-nav">
+          <button class="btn-detail-back" onclick="navegarPara('#/devices')">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+              <line x1="19" y1="12" x2="5" y2="12" />
+              <polyline points="12 19 5 12 12 5" />
+            </svg>
+            <span>Voltar</span>
+          </button>
+        </div>
+
+        <div class="detail-device-header">
+          <div class="detail-avatar-box esp32" id="detail-device-avatar">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+              <rect x="4" y="4" width="16" height="16" rx="2" />
+              <rect x="9" y="9" width="6" height="6" />
+              <path d="M9 1v3M15 1v3M9 20v3M15 20v3M20 9h3M20 14h3M1 9h3M1 14h3" />
+            </svg>
+          </div>
+          <div class="detail-header-text">
+            <div class="detail-name-row">
+              <h2 id="detail-device-title">DEV-01</h2>
+              <span class="detail-status-pill normal" id="detail-status-pill">NORMAL</span>
+            </div>
+            <p class="detail-device-meta" id="detail-device-meta">ESP32 · Boot: e76e1f94 · Caminho: MQTT</p>
+          </div>
+        </div>
+
+        <div class="detail-quad-grid">
+          <!-- QUADRANTE 1: LEITURAS DOS SENSORES -->
+          <div class="card-panel detail-panel">
+            <div class="detail-panel-header">
+              <div class="detail-panel-title">
+                <svg class="detail-title-icon" width="16" height="16" viewBox="0 0 24 24" fill="none"
+                  stroke="currentColor" stroke-width="2">
+                  <path
+                    d="M12 2v4M12 18v4M4.93 4.93l2.83 2.83M16.24 16.24l2.83 2.83M2 12h4M18 12h4M4.93 19.07l2.83-2.83M16.24 7.76l2.83-2.83" />
+                </svg>
+                <h3>LEITURAS DOS SENSORES</h3>
+              </div>
+            </div>
+            <div class="detail-sensors-container">
+              <!-- TEMPERATURA -->
+              <div class="sensor-reading-box">
+                <div class="sensor-icon-circle temp">
+                  <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                    <path d="M14 14.8V5a2 2 0 0 0-4 0v9.8a4 4 0 1 0 4 0z" />
+                  </svg>
+                </div>
+                <div class="sensor-reading-data">
+                  <div class="sensor-num-val" id="detail-sensor-temp">27.6</div>
+                  <div class="sensor-num-unit">°C</div>
+                  <div class="sensor-num-label">TEMPERATURA</div>
+                </div>
+              </div>
+
+              <!-- UMIDADE -->
+              <div class="sensor-reading-box">
+                <div class="sensor-icon-circle umid">
+                  <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                    <path d="M12 3s6 6.5 6 11a6 6 0 0 1-12 0c0-4.5 6-11 6-11z" />
+                  </svg>
+                </div>
+                <div class="sensor-reading-data">
+                  <div class="sensor-num-val" id="detail-sensor-umid">56.2</div>
+                  <div class="sensor-num-unit">%RH</div>
+                  <div class="sensor-num-label">UMIDADE</div>
+                </div>
+              </div>
+
+              <!-- LUMINOSIDADE -->
+              <div class="sensor-reading-box">
+                <div class="sensor-icon-circle lux">
+                  <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                    <circle cx="12" cy="12" r="5" />
+                    <line x1="12" y1="1" x2="12" y2="3" />
+                    <line x1="12" y1="21" x2="12" y2="23" />
+                    <line x1="4.22" y1="4.22" x2="5.64" y2="5.64" />
+                    <line x1="18.36" y1="18.36" x2="19.78" y2="19.78" />
+                    <line x1="1" y1="12" x2="3" y2="12" />
+                    <line x1="21" y1="12" x2="23" y2="12" />
+                    <line x1="4.22" y1="19.78" x2="5.64" y2="18.36" />
+                    <line x1="18.36" y1="5.64" x2="19.78" y2="4.22" />
+                  </svg>
+                </div>
+                <div class="sensor-reading-data">
+                  <div class="sensor-num-val" id="detail-sensor-lux">59508.0</div>
+                  <div class="sensor-num-unit">lux</div>
+                  <div class="sensor-num-label">LUMINOSIDADE</div>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <!-- QUADRANTE 2: ESTATÍSTICAS DE ENVIO -->
+          <div class="card-panel detail-panel">
+            <div class="detail-panel-header">
+              <div class="detail-panel-title">
+                <svg class="detail-title-icon" width="16" height="16" viewBox="0 0 24 24" fill="none"
+                  stroke="currentColor" stroke-width="2">
+                  <line x1="18" y1="20" x2="18" y2="10" />
+                  <line x1="12" y1="20" x2="12" y2="4" />
+                  <line x1="6" y1="20" x2="6" y2="14" />
+                </svg>
+                <h3>ESTATÍSTICAS DE ENVIO</h3>
+              </div>
+            </div>
+            <div class="detail-stats-list">
+              <div class="detail-stat-row">
+                <span class="detail-stat-name">Pacotes enviados</span>
+                <span class="detail-stat-val" id="detail-stat-sent">453</span>
+              </div>
+              <div class="detail-stat-row">
+                <span class="detail-stat-name">Falhas de envio</span>
+                <span class="detail-stat-val" id="detail-stat-failures">0</span>
+              </div>
+              <div class="detail-stat-row">
+                <span class="detail-stat-name">Sequencial</span>
+                <span class="detail-stat-val" id="detail-stat-seq">453</span>
+              </div>
+              <div class="detail-stat-row">
+                <span class="detail-stat-name">Falhas consecutivas A</span>
+                <span class="detail-stat-val" id="detail-stat-fail-a">0</span>
+              </div>
+              <div class="detail-stat-row">
+                <span class="detail-stat-name">Failback counter</span>
+                <span class="detail-stat-val" id="detail-stat-failback">0</span>
+              </div>
+            </div>
+          </div>
+
+          <!-- QUADRANTE 3: BUFFER STORE-AND-FORWARD -->
+          <div class="card-panel detail-panel">
+            <div class="detail-panel-header">
+              <div class="detail-panel-title">
+                <svg class="detail-title-icon" width="16" height="16" viewBox="0 0 24 24" fill="none"
+                  stroke="currentColor" stroke-width="2">
+                  <polygon points="12 2 2 7 12 12 22 7 12 2" />
+                  <polyline points="2 17 12 22 22 17" />
+                  <polyline points="2 12 12 17 22 12" />
+                </svg>
+                <h3>BUFFER STORE-AND-FORWARD</h3>
+              </div>
+            </div>
+            <div class="detail-buffer-box">
+              <div class="buffer-capacity-display" id="detail-buffer-display">
+                <strong id="detail-buffer-cur">1000</strong> <span class="buffer-sep">/</span> <span
+                  id="detail-buffer-max">1000</span> <span class="buffer-percent-text"
+                  id="detail-buffer-pct">(100.0%)</span>
+              </div>
+              <div class="buffer-progress-track">
+                <div class="buffer-progress-fill" id="detail-buffer-fill" style="width: 100%;"></div>
+              </div>
+            </div>
+          </div>
+
+          <!-- QUADRANTE 4: MÁQUINA DE ESTADOS -->
+          <div class="card-panel detail-panel">
+            <div class="detail-panel-header">
+              <div class="detail-panel-title">
+                <svg class="detail-title-icon" width="16" height="16" viewBox="0 0 24 24" fill="none"
+                  stroke="currentColor" stroke-width="2">
+                  <circle cx="18" cy="5" r="3" />
+                  <circle cx="6" cy="12" r="3" />
+                  <circle cx="18" cy="19" r="3" />
+                  <line x1="8.59" y1="13.51" x2="15.42" y2="17.49" />
+                  <line x1="15.41" y1="6.51" x2="8.59" y2="10.49" />
+                </svg>
+                <h3>MÁQUINA DE ESTADOS</h3>
+              </div>
+            </div>
+            <div class="detail-state-machine">
+              <div class="fsm-row">
+                <div class="fsm-state-node active" id="fsm-state-normal">NORMAL</div>
+                <span class="fsm-arrow">→</span>
+                <div class="fsm-state-node" id="fsm-state-failover">FAILOVER</div>
+                <span class="fsm-arrow">→</span>
+              </div>
+              <div class="fsm-row">
+                <div class="fsm-state-node" id="fsm-state-blackout">BLACKOUT</div>
+                <span class="fsm-arrow">→</span>
+                <div class="fsm-state-node" id="fsm-state-recovering">RECOVERING</div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <!-- VIEW: SERVIDORES (CATÁLOGO / LISTAGEM) -->
+      <section id="view-servers" class="spa-view" style="display: none;">
+        <div class="devices-page-header">
+          <div class="devices-header-left">
+            <div class="devices-header-icon server-icon">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                <rect x="2" y="2" width="20" height="8" rx="2" />
+                <rect x="2" y="14" width="20" height="8" rx="2" />
+                <line x1="6" y1="6" x2="6.01" y2="6" />
+                <line x1="6" y1="18" x2="6.01" y2="18" />
+              </svg>
+            </div>
+            <h2>Servidores</h2>
+          </div>
+          <div class="devices-count-pill">
+            <span id="registered-servers-count">1 REGISTRADOS</span>
+          </div>
+        </div>
+
+        <div class="devices-catalog-grid servers-grid">
+          <!-- SRV-01: INGESTION SERVER -->
+          <div class="device-catalog-card" id="catalog-srv-01" onclick="navegarPara('#/device/SRV-01')">
+            <div class="catalog-card-header">
+              <div class="catalog-card-identity">
+                <div class="catalog-avatar server-avatar">
+                  <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                    <rect x="2" y="2" width="20" height="8" rx="2" />
+                    <rect x="2" y="14" width="20" height="8" rx="2" />
+                    <line x1="6" y1="6" x2="6.01" y2="6" />
+                    <line x1="6" y1="18" x2="6.01" y2="18" />
+                  </svg>
+                </div>
+                <div class="catalog-info-col">
+                  <div class="catalog-title-row">
+                    <span class="catalog-device-name">SRV-01</span>
+                  </div>
+                  <span class="catalog-device-sub">Pipeline 5 etapas</span>
+                </div>
+              </div>
+              <div class="catalog-status-badge normal" id="cat-srv1-status">ONLINE</div>
+            </div>
+            <div class="catalog-metrics-grid">
+              <div class="catalog-metric-item">
+                <strong class="metric-big-num" id="cat-srv1-received">986</strong>
+                <span class="metric-sub-label">RECEBIDOS</span>
+              </div>
+              <div class="catalog-metric-item">
+                <strong class="metric-big-num" id="cat-srv1-approved">0</strong>
+                <span class="metric-sub-label">APROVADOS</span>
+              </div>
+              <div class="catalog-metric-item">
+                <strong class="metric-big-num" id="cat-srv1-rejected">986</strong>
+                <span class="metric-sub-label">REJEITADOS</span>
+              </div>
+              <div class="catalog-metric-item">
+                <strong class="metric-big-num" id="cat-srv1-rate">0.0%</strong>
+                <span class="metric-sub-label">TAXA</span>
+              </div>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <!-- VIEW: DETALHES DO SERVIDOR -->
+      <section id="view-server-detail" class="spa-view" style="display: none;">
+        <div class="device-detail-top-nav">
+          <button class="btn-detail-back" onclick="navegarPara('#/servers')">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+              <line x1="19" y1="12" x2="5" y2="12" />
+              <polyline points="12 19 5 12 12 5" />
+            </svg>
+            <span>Voltar</span>
+          </button>
+        </div>
+
+        <div class="detail-device-header">
+          <div class="detail-avatar-box server-avatar" id="detail-server-avatar">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+              <rect x="2" y="2" width="20" height="8" rx="2" />
+              <rect x="2" y="14" width="20" height="8" rx="2" />
+              <line x1="6" y1="6" x2="6.01" y2="6" />
+              <line x1="6" y1="18" x2="6.01" y2="18" />
+            </svg>
+          </div>
+          <div class="detail-header-text">
+            <div class="detail-name-row">
+              <h2 id="detail-server-title">SRV-01</h2>
+              <span class="detail-status-pill normal" id="detail-server-status">ONLINE</span>
+            </div>
+            <p class="detail-device-meta" id="detail-server-meta">Pipeline de 5 etapas</p>
+          </div>
+        </div>
+
+        <div class="detail-tri-grid">
+          <!-- CARD 1: PIPELINE DE PROCESSAMENTO -->
+          <div class="card-panel detail-panel server-pipeline-panel">
+            <div class="detail-panel-header">
+              <div class="detail-panel-title">
+                <svg class="detail-title-icon" width="16" height="16" viewBox="0 0 24 24" fill="none"
+                  stroke="currentColor" stroke-width="2">
+                  <path d="M4 14a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v4a2 2 0 0 1-2 2H6a2 2 0 0 1-2-2z" />
+                  <path d="M14 6a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v4a2 2 0 0 1-2 2h-4a2 2 0 0 1-2-2z" />
+                  <path d="M12 8h2M8 12v2" />
+                </svg>
+                <h3>PIPELINE DE PROCESSAMENTO</h3>
+              </div>
+            </div>
+            <div class="pipeline-stages-container">
+              <div class="pipeline-row">
+                <!-- 1. Auth -->
+                <div class="stage-step-card active">
+                  <div class="stage-step-icon">
+                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                      <path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z" />
+                      <polyline points="9 12 11 14 15 10" />
+                    </svg>
+                  </div>
+                  <span class="stage-step-name">Auth</span>
+                </div>
+                <span class="pipeline-arrow">→</span>
+
+                <!-- 2. Dedup -->
+                <div class="stage-step-card active">
+                  <div class="stage-step-icon">
+                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                      <rect x="8" y="8" width="12" height="12" rx="2" />
+                      <path d="M4 16c-1.1 0-2-.9-2-2V4c0-1.1.9-2 2-2h10c1.1 0 2 .9 2 2" />
+                    </svg>
+                  </div>
+                  <span class="stage-step-name">Dedup</span>
+                </div>
+                <span class="pipeline-arrow">→</span>
+
+                <!-- 3. Schema -->
+                <div class="stage-step-card active">
+                  <div class="stage-step-icon">
+                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                      <path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z" />
+                      <polyline points="14 2 14 8 20 8" />
+                      <line x1="16" y1="13" x2="8" y2="13" />
+                      <line x1="16" y1="17" x2="8" y2="17" />
+                    </svg>
+                  </div>
+                  <span class="stage-step-name">Schema</span>
+                </div>
+                <span class="pipeline-arrow">→</span>
+
+                <!-- 4. Range -->
+                <div class="stage-step-card active">
+                  <div class="stage-step-icon">
+                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                      <circle cx="12" cy="12" r="10" />
+                      <path d="M12 6v6l4 2" />
+                    </svg>
+                  </div>
+                  <span class="stage-step-name">Range</span>
+                </div>
+                <span class="pipeline-arrow">→</span>
+              </div>
+
+              <div class="pipeline-row bottom-row">
+                <!-- 5. Persist -->
+                <div class="stage-step-card active">
+                  <div class="stage-step-icon">
+                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                      <ellipse cx="12" cy="5" rx="9" ry="3" />
+                      <path d="M21 12c0 1.66-4 3-9 3s-9-1.34-9-3" />
+                      <path d="M3 5v14c0 1.66 4 3 9 3s9-1.34 9-3V5" />
+                    </svg>
+                  </div>
+                  <span class="stage-step-name">Persist</span>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <!-- CARD 2: ESTATÍSTICAS -->
+          <div class="card-panel detail-panel server-stats-panel">
+            <div class="detail-panel-header">
+              <div class="detail-panel-title">
+                <svg class="detail-title-icon" width="16" height="16" viewBox="0 0 24 24" fill="none"
+                  stroke="currentColor" stroke-width="2">
+                  <line x1="18" y1="20" x2="18" y2="10" />
+                  <line x1="12" y1="20" x2="12" y2="4" />
+                  <line x1="6" y1="20" x2="6" y2="14" />
+                </svg>
+                <h3>ESTATÍSTICAS</h3>
+              </div>
+            </div>
+            <div class="detail-stats-list">
+              <div class="detail-stat-row">
+                <span class="detail-stat-name">Pacotes recebidos</span>
+                <span class="detail-stat-val" id="server-stat-received">986</span>
+              </div>
+              <div class="detail-stat-row">
+                <span class="detail-stat-name">Aprovados</span>
+                <span class="detail-stat-val" id="server-stat-approved">0 (0.0%)</span>
+              </div>
+              <div class="detail-stat-row">
+                <span class="detail-stat-name">Rejeitados</span>
+                <span class="detail-stat-val" id="server-stat-rejected">986 (100.0%)</span>
+              </div>
+              <div class="detail-stat-row">
+                <span class="detail-stat-name">Deduplicados</span>
+                <span class="detail-stat-val" id="server-stat-dedup">0</span>
+              </div>
+            </div>
+          </div>
+
+          <!-- CARD 3: TAXA DE APROVAÇÃO -->
+          <div class="card-panel detail-panel server-rate-panel">
+            <div class="detail-panel-header">
+              <div class="detail-panel-title">
+                <svg class="detail-title-icon" width="16" height="16" viewBox="0 0 24 24" fill="none"
+                  stroke="currentColor" stroke-width="2">
+                  <path d="M22 11.08V12a10 10 0 1 1-5.93-9.14" />
+                  <polyline points="22 4 12 14.01 9 11.01" />
+                </svg>
+                <h3>TAXA DE APROVAÇÃO</h3>
+              </div>
+            </div>
+            <div class="server-gauge-container">
+              <div class="circular-progress-box">
+                <svg class="progress-ring" width="110" height="110">
+                  <circle class="progress-ring-bg" stroke="rgba(255, 255, 255, 0.06)" stroke-width="8"
+                    fill="transparent" r="46" cx="55" cy="55" />
+                  <circle class="progress-ring-circle" id="server-ring-circle" stroke="#10B981" stroke-width="8"
+                    stroke-linecap="round" fill="transparent" r="46" cx="55" cy="55"
+                    style="stroke-dasharray: 289; stroke-dashoffset: 289;" />
+                </svg>
+                <div class="progress-ring-center">
+                  <span class="progress-ring-percent" id="server-rate-percent">0%</span>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <!-- VIEW: CLIENTES (CATÁLOGO / LISTAGEM) -->
+      <section id="view-clients" class="spa-view" style="display: none;">
+        <div class="devices-page-header">
+          <div class="devices-header-left">
+            <div class="devices-header-icon client-icon">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                <path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2" />
+                <circle cx="9" cy="7" r="4" />
+                <path d="M23 21v-2a4 4 0 0 0-3-3.87" />
+                <path d="M16 3.13a4 4 0 0 1 0 7.75" />
+              </svg>
+            </div>
+            <h2>Clientes</h2>
+          </div>
+          <div class="devices-count-pill">
+            <span id="registered-clients-count">4 CONECTADOS</span>
+          </div>
+        </div>
+
+        <div class="devices-catalog-grid clients-grid">
+          <!-- PC-GER-01: GERÊNCIA -->
+          <div class="device-catalog-card" id="catalog-pc-ger-01" onclick="navegarPara('#/device/PC-GER-01')">
+            <div class="catalog-card-header">
+              <div class="catalog-card-identity">
+                <div class="catalog-avatar client-avatar-ger">
+                  <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                    <line x1="18" y1="20" x2="18" y2="10" />
+                    <line x1="12" y1="20" x2="12" y2="4" />
+                    <line x1="6" y1="20" x2="6" y2="14" />
+                  </svg>
+                </div>
+                <div class="catalog-info-col">
+                  <div class="catalog-title-row">
+                    <span class="catalog-device-name">PC-GER-01</span>
+                  </div>
+                  <span class="catalog-device-sub">GERENCIA · SRV: SRV-01</span>
+                </div>
+              </div>
+              <div class="catalog-status-badge normal" id="cat-pcger-status">CONECTADO</div>
+            </div>
+            <div class="catalog-metrics-grid client-two-metrics">
+              <div class="catalog-metric-item">
+                <strong class="metric-big-num" id="cat-pcger-packets">986</strong>
+                <span class="metric-sub-label">PACOTES</span>
+              </div>
+              <div class="catalog-metric-item">
+                <strong class="metric-big-num text-role" id="cat-pcger-role">GERENCIA</strong>
+                <span class="metric-sub-label">PAPEL</span>
+              </div>
+            </div>
+          </div>
+
+          <!-- PC-ANA-01: ANALISTA -->
+          <div class="device-catalog-card" id="catalog-pc-ana-01" onclick="navegarPara('#/device/PC-ANA-01')">
+            <div class="catalog-card-header">
+              <div class="catalog-card-identity">
+                <div class="catalog-avatar client-avatar-ana">
+                  <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                    <polyline points="23 6 13.5 15.5 8.5 10.5 1 18" />
+                    <polyline points="17 6 23 6 23 12" />
+                  </svg>
+                </div>
+                <div class="catalog-info-col">
+                  <div class="catalog-title-row">
+                    <span class="catalog-device-name">PC-ANA-01</span>
+                  </div>
+                  <span class="catalog-device-sub">ANALISTA · SRV: SRV-01</span>
+                </div>
+              </div>
+              <div class="catalog-status-badge normal" id="cat-pcana-status">CONECTADO</div>
+            </div>
+            <div class="catalog-metrics-grid client-two-metrics">
+              <div class="catalog-metric-item">
+                <strong class="metric-big-num" id="cat-pcana-packets">986</strong>
+                <span class="metric-sub-label">PACOTES</span>
+              </div>
+              <div class="catalog-metric-item">
+                <strong class="metric-big-num text-role" id="cat-pcana-role">ANALISTA</strong>
+                <span class="metric-sub-label">PAPEL</span>
+              </div>
+            </div>
+          </div>
+
+          <!-- PC-TEC-01: TÉCNICO -->
+          <div class="device-catalog-card" id="catalog-pc-tec-01" onclick="navegarPara('#/device/PC-TEC-01')">
+            <div class="catalog-card-header">
+              <div class="catalog-card-identity">
+                <div class="catalog-avatar client-avatar-tec">
+                  <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                    <path
+                      d="M14.7 6.3a1 1 0 0 0 0 1.4l1.6 1.6a1 1 0 0 0 1.4 0l3.77-3.77a6 6 0 0 1-7.94 7.94l-6.91 6.91a2.12 2.12 0 0 1-3-3l6.91-6.91a6 6 0 0 1 7.94-7.94l-3.76 3.76z" />
+                  </svg>
+                </div>
+                <div class="catalog-info-col">
+                  <div class="catalog-title-row">
+                    <span class="catalog-device-name">PC-TEC-01</span>
+                  </div>
+                  <span class="catalog-device-sub">TECNICO · SRV: SRV-01</span>
+                </div>
+              </div>
+              <div class="catalog-status-badge normal" id="cat-pctec-status">CONECTADO</div>
+            </div>
+            <div class="catalog-metrics-grid client-two-metrics">
+              <div class="catalog-metric-item">
+                <strong class="metric-big-num" id="cat-pctec-packets">986</strong>
+                <span class="metric-sub-label">PACOTES</span>
+              </div>
+              <div class="catalog-metric-item">
+                <strong class="metric-big-num text-role" id="cat-pctec-role">TECNICO</strong>
+                <span class="metric-sub-label">PAPEL</span>
+              </div>
+            </div>
+          </div>
+
+          <!-- PC-EST-01: ESTRANHO (ACESSO NEGADO) -->
+          <div class="device-catalog-card" id="catalog-pc-est-01" onclick="navegarPara('#/device/PC-EST-01')">
+            <div class="catalog-card-header">
+              <div class="catalog-card-identity">
+                <div class="catalog-avatar client-avatar-est">
+                  <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                    <circle cx="12" cy="12" r="10" />
+                    <line x1="4.93" y1="4.93" x2="19.07" y2="19.07" />
+                  </svg>
+                </div>
+                <div class="catalog-info-col">
+                  <div class="catalog-title-row">
+                    <span class="catalog-device-name">PC-EST-01</span>
+                  </div>
+                  <span class="catalog-device-sub">ESTRANHO · SRV: SRV-01</span>
+                </div>
+              </div>
+              <div class="catalog-status-badge denied" id="cat-pcest-status">ACESSO NEGADO</div>
+            </div>
+            <div class="catalog-metrics-grid client-two-metrics">
+              <div class="catalog-metric-item">
+                <strong class="metric-big-num" id="cat-pcest-packets">986</strong>
+                <span class="metric-sub-label">PACOTES</span>
+              </div>
+              <div class="catalog-metric-item">
+                <strong class="metric-big-num text-role" id="cat-pcest-role">ESTRANHO</strong>
+                <span class="metric-sub-label">PAPEL</span>
+              </div>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <!-- VIEW: DETALHES DO CLIENTE -->
+      <section id="view-client-detail" class="spa-view" style="display: none;">
+        <div class="device-detail-top-nav">
+          <button class="btn-detail-back" onclick="navegarPara('#/clients')">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+              <line x1="19" y1="12" x2="5" y2="12" />
+              <polyline points="12 19 5 12 12 5" />
+            </svg>
+            <span>Voltar</span>
+          </button>
+        </div>
+
+        <div class="detail-device-header">
+          <div class="detail-avatar-box client-avatar-box" id="detail-client-avatar">
+            <svg id="detail-client-avatar-svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+              <line x1="18" y1="20" x2="18" y2="10" />
+              <line x1="12" y1="20" x2="12" y2="4" />
+              <line x1="6" y1="20" x2="6" y2="14" />
+            </svg>
+          </div>
+          <div class="detail-header-text">
+            <div class="detail-name-row">
+              <h2 id="detail-client-title">PC-GER-01</h2>
+              <span class="detail-status-pill normal" id="detail-client-role-badge">GERENCIA</span>
+            </div>
+            <p class="detail-device-meta" id="detail-client-meta">Servidor: SRV-01 · Pacotes: 986</p>
+          </div>
+        </div>
+
+        <!-- CONTEÚDO DINÂMICO CONFORME O CLIENTE -->
+        <!-- 1. PAINEL GERÊNCIA (VISÃO EXECUTIVA) -->
+        <div class="client-detail-content" id="client-panel-gerencia" style="display: none;">
+          <div class="card-panel detail-panel client-full-panel">
+            <div class="detail-panel-header">
+              <div class="detail-panel-title">
+                <svg class="detail-title-icon" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                  <line x1="18" y1="20" x2="18" y2="10" />
+                  <line x1="12" y1="20" x2="12" y2="4" />
+                  <line x1="6" y1="20" x2="6" y2="14" />
+                </svg>
+                <h3>VISÃO EXECUTIVA</h3>
+              </div>
+            </div>
+            <div class="client-exec-grid">
+              <!-- TOTAL ENVIADOS -->
+              <div class="client-metric-card">
+                <div class="client-metric-icon">
+                  <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                    <path d="M21 16V8a2 2 0 0 0-1-1.73l-7-4a2 2 0 0 0-2 0l-7 4A2 2 0 0 0 3 8v8a2 2 0 0 0 1 1.73l7 4a2 2 0 0 0 2 0l7-4A2 2 0 0 0 21 16z" />
+                    <polyline points="3.27 6.96 12 12.01 20.73 6.96" />
+                    <line x1="12" y1="22.08" x2="12" y2="12" />
+                  </svg>
+                </div>
+                <strong class="client-big-val" id="exec-total-sent">986</strong>
+                <span class="client-metric-label">TOTAL ENVIADOS</span>
+              </div>
+              <!-- TAXA ENTREGA -->
+              <div class="client-metric-card">
+                <div class="client-metric-icon">
+                  <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                    <circle cx="12" cy="12" r="10" />
+                    <polyline points="9 12 11 14 15 10" />
+                  </svg>
+                </div>
+                <strong class="client-big-val" id="exec-delivery-rate">100.0%</strong>
+                <span class="client-metric-label">TAXA ENTREGA</span>
+              </div>
+              <!-- DISPOSITIVOS -->
+              <div class="client-metric-card">
+                <div class="client-metric-icon">
+                  <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                    <rect x="4" y="4" width="16" height="16" rx="2" />
+                    <rect x="9" y="9" width="6" height="6" />
+                    <line x1="9" y1="1" x2="9" y2="4" />
+                    <line x1="15" y1="1" x2="15" y2="4" />
+                    <line x1="9" y1="20" x2="9" y2="23" />
+                    <line x1="15" y1="20" x2="15" y2="23" />
+                    <line x1="20" y1="9" x2="23" y2="9" />
+                    <line x1="20" y1="14" x2="23" y2="14" />
+                    <line x1="1" y1="9" x2="4" y2="9" />
+                    <line x1="1" y1="14" x2="4" y2="14" />
+                  </svg>
+                </div>
+                <strong class="client-big-val" id="exec-devices-count">2</strong>
+                <span class="client-metric-label">DISPOSITIVOS</span>
+              </div>
+              <!-- FALHAS -->
+              <div class="client-metric-card">
+                <div class="client-metric-icon">
+                  <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                    <path d="M10.29 3.86L1.82 18a2 2 0 0 0 1.71 3h16.94a2 2 0 0 0 1.71-3L13.71 3.86a2 2 0 0 0-3.42 0z" />
+                    <line x1="12" y1="9" x2="12" y2="13" />
+                    <line x1="12" y1="17" x2="12.01" y2="17" />
+                  </svg>
+                </div>
+                <strong class="client-big-val" id="exec-failures-count">0</strong>
+                <span class="client-metric-label">FALHAS</span>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- 2. PAINEL ANALISTA (TELEMETRIA DE SENSORES) -->
+        <div class="client-detail-content" id="client-panel-analista" style="display: none;">
+          <div class="card-panel detail-panel client-full-panel">
+            <div class="detail-panel-header">
+              <div class="detail-panel-title">
+                <svg class="detail-title-icon" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                  <polyline points="22 12 18 12 15 21 9 3 6 12 2 12" />
+                </svg>
+                <h3>TELEMETRIA</h3>
+              </div>
+            </div>
+            <div class="client-telemetry-container">
+              <!-- SEÇÃO DEV-01 (ESP32) -->
+              <div class="telemetry-device-section">
+                <h4 class="telemetry-device-heading">DEV-01 (ESP32)</h4>
+                <div class="telemetry-tri-cards">
+                  <div class="telemetry-sensor-card">
+                    <div class="telemetry-sensor-icon">
+                      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                        <path d="M14 14.76V3.5a2.5 2.5 0 0 0-5 0v11.26a4.5 4.5 0 1 0 5 0z" />
+                      </svg>
+                    </div>
+                    <strong class="telemetry-big-val" id="ana-dev1-temp">27.6</strong>
+                    <span class="telemetry-unit">°C</span>
+                    <span class="telemetry-label">TEMPERATURE</span>
+                  </div>
+                  <div class="telemetry-sensor-card">
+                    <div class="telemetry-sensor-icon">
+                      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                        <path d="M12 2.69l5.66 5.66a8 8 0 1 1-11.31 0z" />
+                      </svg>
+                    </div>
+                    <strong class="telemetry-big-val" id="ana-dev1-umid">56.2</strong>
+                    <span class="telemetry-unit">%RH</span>
+                    <span class="telemetry-label">HUMIDITY</span>
+                  </div>
+                  <div class="telemetry-sensor-card">
+                    <div class="telemetry-sensor-icon">
+                      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                        <circle cx="12" cy="12" r="5" />
+                        <line x1="12" y1="1" x2="12" y2="3" />
+                        <line x1="12" y1="21" x2="12" y2="23" />
+                        <line x1="4.22" y1="4.22" x2="5.64" y2="5.64" />
+                        <line x1="18.36" y1="18.36" x2="19.78" y2="19.78" />
+                        <line x1="1" y1="12" x2="3" y2="12" />
+                        <line x1="21" y1="12" x2="23" y2="12" />
+                        <line x1="4.22" y1="19.78" x2="5.64" y2="18.36" />
+                        <line x1="18.36" y1="5.64" x2="19.78" y2="4.22" />
+                      </svg>
+                    </div>
+                    <strong class="telemetry-big-val" id="ana-dev1-lux">59508.0</strong>
+                    <span class="telemetry-unit">lux</span>
+                    <span class="telemetry-label">LUMINOSITY</span>
+                  </div>
+                </div>
+              </div>
+
+              <!-- SEÇÃO DEV-02 (ARDUINO) -->
+              <div class="telemetry-device-section">
+                <h4 class="telemetry-device-heading">DEV-02 (ARDUINO)</h4>
+                <div class="telemetry-tri-cards">
+                  <div class="telemetry-sensor-card">
+                    <div class="telemetry-sensor-icon">
+                      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                        <path d="M14 14.76V3.5a2.5 2.5 0 0 0-5 0v11.26a4.5 4.5 0 1 0 5 0z" />
+                      </svg>
+                    </div>
+                    <strong class="telemetry-big-val" id="ana-dev2-temp">28.7</strong>
+                    <span class="telemetry-unit">°C</span>
+                    <span class="telemetry-label">TEMPERATURE</span>
+                  </div>
+                  <div class="telemetry-sensor-card">
+                    <div class="telemetry-sensor-icon">
+                      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                        <path d="M12 2.69l5.66 5.66a8 8 0 1 1-11.31 0z" />
+                      </svg>
+                    </div>
+                    <strong class="telemetry-big-val" id="ana-dev2-umid">52.9</strong>
+                    <span class="telemetry-unit">%RH</span>
+                    <span class="telemetry-label">HUMIDITY</span>
+                  </div>
+                  <div class="telemetry-sensor-card">
+                    <div class="telemetry-sensor-icon">
+                      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                        <circle cx="12" cy="12" r="5" />
+                        <line x1="12" y1="1" x2="12" y2="3" />
+                        <line x1="12" y1="21" x2="12" y2="23" />
+                        <line x1="4.22" y1="4.22" x2="5.64" y2="5.64" />
+                        <line x1="18.36" y1="18.36" x2="19.78" y2="19.78" />
+                        <line x1="1" y1="12" x2="3" y2="12" />
+                        <line x1="21" y1="12" x2="23" y2="12" />
+                        <line x1="4.22" y1="19.78" x2="5.64" y2="18.36" />
+                        <line x1="18.36" y1="5.64" x2="19.78" y2="4.22" />
+                      </svg>
+                    </div>
+                    <strong class="telemetry-big-val" id="ana-dev2-lux">59753.1</strong>
+                    <span class="telemetry-unit">lux</span>
+                    <span class="telemetry-label">LUMINOSITY</span>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- 3. PAINEL TÉCNICO (DIAGNÓSTICO DE DISPOSITIVOS) -->
+        <div class="client-detail-content" id="client-panel-tecnico" style="display: none;">
+          <div class="card-panel detail-panel client-full-panel">
+            <div class="detail-panel-header">
+              <div class="detail-panel-title">
+                <svg class="detail-title-icon" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                  <path d="M14.7 6.3a1 1 0 0 0 0 1.4l1.6 1.6a1 1 0 0 0 1.4 0l3.77-3.77a6 6 0 0 1-7.94 7.94l-6.91 6.91a2.12 2.12 0 0 1-3-3l6.91-6.91a6 6 0 0 1 7.94-7.94l-3.76 3.76z" />
+                </svg>
+                <h3>DIAGNÓSTICO DE DISPOSITIVOS</h3>
+              </div>
+            </div>
+            <div class="diagnostic-list">
+              <!-- LINHA DEV-01 -->
+              <div class="diagnostic-row-item">
+                <div class="diagnostic-left">
+                  <div class="diagnostic-avatar dev-icon">
+                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                      <rect x="4" y="4" width="16" height="16" rx="2" />
+                      <rect x="9" y="9" width="6" height="6" />
+                      <path d="M9 1v3M15 1v3M9 20v3M15 20v3M20 9h3M20 14h3M1 9h3M1 14h3" />
+                    </svg>
+                  </div>
+                  <div class="diagnostic-info">
+                    <span class="diagnostic-device-name">DEV-01</span>
+                    <span class="diagnostic-device-sub" id="tec-dev1-info">NORMAL · Buffer: 1000/1000 · Fails: 0</span>
+                  </div>
+                </div>
+                <div class="diagnostic-badge normal" id="tec-dev1-badge">NORMAL</div>
+              </div>
+
+              <!-- LINHA DEV-02 -->
+              <div class="diagnostic-row-item">
+                <div class="diagnostic-left">
+                  <div class="diagnostic-avatar dev-icon">
+                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                      <rect x="4" y="4" width="16" height="16" rx="2" />
+                      <rect x="9" y="9" width="6" height="6" />
+                      <path d="M9 1v3M15 1v3M9 20v3M15 20v3M20 9h3M20 14h3M1 9h3M1 14h3" />
+                    </svg>
+                  </div>
+                  <div class="diagnostic-info">
+                    <span class="diagnostic-device-name">DEV-02</span>
+                    <span class="diagnostic-device-sub" id="tec-dev2-info">NORMAL · Buffer: 200/200 · Fails: 0</span>
+                  </div>
+                </div>
+                <div class="diagnostic-badge normal" id="tec-dev2-badge">NORMAL</div>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- 4. PAINEL ESTRANHO (ACESSO NEGADO) -->
+        <div class="client-detail-content" id="client-panel-estranho" style="display: none;">
+          <div class="card-panel detail-panel client-full-panel client-denied-panel">
+            <div class="denied-box-center">
+              <div class="denied-icon-shield">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                  <circle cx="12" cy="12" r="10" />
+                  <line x1="4.93" y1="4.93" x2="19.07" y2="19.07" />
+                </svg>
+              </div>
+              <h3 class="denied-title">ACESSO NÃO AUTORIZADO</h3>
+              <p class="denied-desc">A tentativa de conexão a partir do host <code>PC-EST-01</code> foi rejeitada pela política de autenticação do Servidor Central (SRV-01).</p>
+              <div class="denied-reason-badge">FALHA NA ETAPA DE AUTH DO PIPELINE</div>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <!-- SEÇÃO INFERIOR: LOGS & EVENTOS EM TEMPO REAL -->
+      <section class="card-panel logs-panel">
+        <div class="logs-header">
+          <div class="logs-title">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+              <polyline points="4 17 10 11 4 5" />
+              <line x1="12" y1="19" x2="20" y2="19" />
+            </svg>
+            <h3>LOGS</h3>
+          </div>
+
+          <div class="logs-actions">
+            <div class="logs-filters">
+              <button class="filter-chip active" data-filter="all">Todos</button>
+              <button class="filter-chip" data-filter="PACKET">Pacotes</button>
+              <button class="filter-chip" data-filter="ALERT">Alertas</button>
+              <button class="filter-chip" data-filter="CHAOS">Chaos</button>
+              <button class="filter-chip" data-filter="STATE">Estados</button>
+            </div>
+            <button class="btn-icon-small" id="btn-clear-logs" title="Limpar console de logs">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                <polyline points="3 6 5 6 21 6" />
+                <path d="M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6m3 0V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2" />
+              </svg>
+            </button>
+          </div>
+        </div>
+
+        <div class="logs-stream-container" id="logs-container">
+          <!-- Linhas de log injetadas dinamicamente -->
+        </div>
+      </section>
+    </main>
+  </div>
+
+  <!-- MODAL / DRAWER DE INSPEÇÃO DETALHADA DO SENSOR (DHT22) -->
+  <div class="modal-overlay" id="modal-sensor-overlay">
+    <div class="modal-card">
+      <div class="modal-header">
+        <div class="modal-title-group">
+          <div class="modal-badge-icon" id="modal-sensor-icon">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+              <path d="M14 14.8V5a2 2 0 0 0-4 0v9.8a4 4 0 1 0 4 0z" />
+            </svg>
+          </div>
+          <div>
+            <h2 id="modal-sensor-name">DHT22 — Sensor Digital</h2>
+            <p id="modal-sensor-sub">Dispositivo: DEV-01 (ESP32) · Pino GPIO 5 · Barramento OneWire</p>
+          </div>
+        </div>
+        <button class="modal-close" onclick="fecharModalSensor()" title="Fechar">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+            <line x1="18" y1="6" x2="6" y2="18" />
+            <line x1="6" y1="6" x2="18" y2="18" />
+          </svg>
+        </button>
+      </div>
+
+      <div class="modal-body">
+        <!-- GAUGES / INDICADORES PRINCIPAIS -->
+        <div class="modal-gauges-grid">
+          <div class="gauge-box">
+            <span class="gauge-label">TEMPERATURA ATUAL</span>
+            <div class="gauge-main-val" id="modal-temp-val">27.4 <span class="unit">°C</span></div>
+            <div class="gauge-bar-track">
+              <div class="gauge-bar-fill" id="modal-temp-bar" style="width: 55%;"></div>
+            </div>
+            <div class="gauge-minmax">
+              <span>Faixa: -40 °C</span>
+              <span id="modal-temp-limit">Alerta: &gt; 30 °C</span>
+              <span>80 °C</span>
+            </div>
+          </div>
+
+          <div class="gauge-box">
+            <span class="gauge-label">UMIDADE RELATIVA</span>
+            <div class="gauge-main-val blue" id="modal-umid-val">61.0 <span class="unit">%</span></div>
+            <div class="gauge-bar-track">
+              <div class="gauge-bar-fill blue" id="modal-umid-bar" style="width: 61%;"></div>
+            </div>
+            <div class="gauge-minmax">
+              <span>Faixa: 0%</span>
+              <span id="modal-umid-comfort">Confortável</span>
+              <span>100%</span>
+            </div>
+          </div>
+
+          <div class="gauge-box">
+            <span class="gauge-label">SENSAÇÃO TÉRMICA (HEAT INDEX)</span>
+            <div class="gauge-main-val amber" id="modal-sens-val">28.9 <span class="unit">°C</span></div>
+            <div class="gauge-bar-track">
+              <div class="gauge-bar-fill amber" id="modal-sens-bar" style="width: 58%;"></div>
+            </div>
+            <div class="gauge-minmax">
+              <span>Fórmula NOAA / Steadman</span>
+            </div>
+          </div>
+        </div>
+
+        <!-- ABAS DE INFORMAÇÃO DETALHADA -->
+        <div class="modal-tabs">
+          <button class="tab-btn active" data-tab="tab-payload" onclick="trocarAbaModal('tab-payload')">Payload MQTT /
+            JSON</button>
+          <button class="tab-btn" data-tab="tab-specs" onclick="trocarAbaModal('tab-specs')">Especificações do
+            DHT22</button>
+          <button class="tab-btn" data-tab="tab-transmission" onclick="trocarAbaModal('tab-transmission')">Trânsito na
+            Rede</button>
+          <button class="tab-btn" data-tab="tab-config" onclick="trocarAbaModal('tab-config')">Conectar ESP32
+            Real</button>
+        </div>
+
+        <!-- CONTEÚDO DAS ABAS -->
+        <div class="tab-content active" id="tab-payload">
+          <div class="code-box">
+            <div class="code-header">
+              <span>TÓPICO MQTT: <strong class="code-topic"
+                  id="modal-mqtt-topic">oficina/snct/dev01/telemetria</strong></span>
+              <span class="code-qos">QoS: 1 · Retain: false</span>
+            </div>
+            <pre><code id="modal-json-preview">{
+  "device_id": "DEV-01",
+  "client_name": "ESP32_WOKWI_UABJ",
+  "protocol": "MQTT",
+  "timestamp": "2026-10-26T23:40:12.441Z",
+  "sensors": {
+    "temperature": 27.4,
+    "humidity": 61.0,
+    "heat_index": 28.9,
+    "status": "OK",
+    "pin": 5
+  },
+  "network": {
+    "ip": "10.0.0.175",
+    "rssi": -58,
+    "path": "PATH_A_MQTT"
+  }
+}</code></pre>
+          </div>
+        </div>
+
+        <div class="tab-content" id="tab-specs">
+          <table class="specs-table">
+            <tr>
+              <td><strong>Modelo</strong></td>
+              <td>Aosong AM2302 / DHT22 (Sensor Capacitivo de Umidade e Termistor NTC)</td>
+            </tr>
+            <tr>
+              <td><strong>Alimentação</strong></td>
+              <td>3.3V a 5.5V DC (operando em 3.3V no ESP32)</td>
+            </tr>
+            <tr>
+              <td><strong>Faixa de Temperatura</strong></td>
+              <td>-40 °C a +80 °C (Precisão ±0.5 °C, Resolução 0.1 °C)</td>
+            </tr>
+            <tr>
+              <td><strong>Faixa de Umidade</strong></td>
+              <td>0 a 100% RH (Precisão ±2% RH, Resolução 0.1% RH)</td>
+            </tr>
+            <tr>
+              <td><strong>Período Mínimo de Leitura</strong></td>
+              <td>2 segundos (2000 ms) entre amostras sucessivas</td>
+            </tr>
+            <tr>
+              <td><strong>Pino Conectado</strong></td>
+              <td>GPIO 5 com resistor de pull-up interno / externo de 4.7kΩ</td>
+            </tr>
+          </table>
+        </div>
+
+        <div class="tab-content" id="tab-transmission">
+          <div class="flow-steps">
+            <div class="flow-step">
+              <span class="step-num">1</span>
+              <div>
+                <strong>Amostragem</strong>
+                <p>O ESP32 lê o pino digital 5 via biblioteca DHT com intervalo não-bloqueante (`millis()`).</p>
+              </div>
+            </div>
+            <div class="flow-step">
+              <span class="step-num">2</span>
+              <div>
+                <strong>Serialização JSON</strong>
+                <p>Os valores numéricos de temperatura e umidade são montados no payload leve em formato JSON.</p>
+              </div>
+            </div>
+            <div class="flow-step">
+              <span class="step-num">3</span>
+              <div>
+                <strong>Publicação MQTT</strong>
+                <p>Publicado no Broker Mosquitto via Wi-Fi sob o tópico `oficina/snct/dev01/telemetria`.</p>
+              </div>
+            </div>
+            <div class="flow-step">
+              <span class="step-num">4</span>
+              <div>
+                <strong>Entrega aos Assinantes</strong>
+                <p>O servidor `SRV-01` e os clientes finais (`Analista`, `Gerência`, `Técnico`) recebem o pacote
+                  instantaneamente.</p>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <div class="tab-content" id="tab-config">
+          <div class="config-box">
+            <p>Se você estiver com o ESP32 real ou o simulador Wokwi rodando na sua rede local, você pode conectá-lo
+              para que esta dashboard leia os dados reais em vez dos dados simulados:</p>
+            <div class="config-input-row">
+              <input type="text" id="input-esp-ip" placeholder="Ex.: 10.0.0.175 ou http://localhost:8180"
+                value="http://10.0.0.175">
+              <button class="btn-primary" onclick="conectarEspReal()">Conectar ao ESP32</button>
+            </div>
+            <div id="esp-connect-status" class="config-status">Modo: Simulação IoT Contínua (pronto para alternar)</div>
+          </div>
+        </div>
+      </div>
+
+      <div class="modal-footer">
+        <span class="modal-info-footer">Dica: Você também pode clicar diretamente em qualquer sensor na coluna
+          <strong>PERCEPÇÃO</strong> da Topologia.</span>
+        <button class="btn-modal-action" onclick="fecharModalSensor()">Entendido</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- ======================================================================
+       DRAWER LATERAL: PAINEL DE CHAOS ENGINEERING
+       ====================================================================== -->
+  <aside class="chaos-drawer" id="chaos-drawer">
+    <div class="chaos-drawer-header">
+      <div class="chaos-drawer-title">
+        <span class="chaos-fire-icon">🔥</span>
+        <h3>Chaos Engineering</h3>
+      </div>
+      <button class="chaos-close-btn" id="btn-close-chaos" onclick="fecharChaosDrawer()" title="Fechar Painel de Caos">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+          <line x1="18" y1="6" x2="6" y2="18" />
+          <line x1="6" y1="6" x2="18" y2="18" />
+        </svg>
+      </button>
+    </div>
+
+    <div class="chaos-drawer-body">
+      <!-- 1. SEÇÃO CENÁRIOS -->
+      <div class="chaos-section">
+        <span class="chaos-section-label">CENÁRIOS</span>
+        <div class="chaos-cards-col">
+          <!-- Tempestade -->
+          <div class="chaos-action-card" id="card-scenario-storm" onclick="acionarCenario('tempestade')">
+            <div class="chaos-card-icon storm-icon">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                <path d="M17.5 19H9a7 7 0 1 1 6.71-9h1.79a4.5 4.5 0 1 1 0 9Z" />
+                <line x1="11" y1="19" x2="9" y2="23" />
+                <line x1="15" y1="19" x2="13" y2="23" />
+              </svg>
+            </div>
+            <div class="chaos-card-text">
+              <strong class="chaos-card-title">Tempestade</strong>
+              <span class="chaos-card-sub">Alta latência + perda de pacotes</span>
+            </div>
+          </div>
+
+          <!-- Blackout Total -->
+          <div class="chaos-action-card" id="card-scenario-blackout" onclick="acionarCenario('blackout')">
+            <div class="chaos-card-icon blackout-icon">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                <circle cx="12" cy="12" r="10" />
+                <line x1="4.93" y1="4.93" x2="19.07" y2="19.07" />
+              </svg>
+            </div>
+            <div class="chaos-card-text">
+              <strong class="chaos-card-title">Blackout Total</strong>
+              <span class="chaos-card-sub">Elimina todas as comunicações</span>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- 2. SEÇÃO TRANSPORTE -->
+      <div class="chaos-section">
+        <span class="chaos-section-label">TRANSPORTE</span>
+        <div class="chaos-cards-col">
+          <!-- Falhar MQTT -->
+          <div class="chaos-action-card fail-card" id="card-fail-mqtt" onclick="executarAcaoTransporte('fail_mqtt')">
+            <div class="chaos-card-icon danger-icon">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                <line x1="1" y1="1" x2="23" y2="23" />
+                <path d="M16.72 11.06A10.94 10.94 0 0 1 19 12.55" />
+                <path d="M5 12.55a10.94 10.94 0 0 1 5.17-2.39" />
+                <path d="M10.71 5.05A16 16 0 0 1 22.58 9" />
+                <path d="M1.42 9a15.91 15.91 0 0 1 4.7-2.88" />
+                <path d="M8.53 16.11a6 6 0 0 1 6.95 0" />
+                <line x1="12" y1="20" x2="12.01" y2="20" />
+              </svg>
+            </div>
+            <div class="chaos-card-text">
+              <strong class="chaos-card-title">Falhar MQTT</strong>
+              <span class="chaos-card-sub">Desabilita Wi-Fi, força failover LoRa</span>
+            </div>
+          </div>
+
+          <!-- Restaurar MQTT -->
+          <div class="chaos-action-card restore-card" id="card-restore-mqtt" onclick="executarAcaoTransporte('restore_mqtt')">
+            <div class="chaos-card-icon success-icon">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                <path d="M5 12.55a11 11 0 0 1 14.08 0" />
+                <path d="M1.42 9a16 16 0 0 1 21.16 0" />
+                <path d="M8.53 16.11a6 6 0 0 1 6.95 0" />
+                <line x1="12" y1="20" x2="12.01" y2="20" />
+              </svg>
+            </div>
+            <div class="chaos-card-text">
+              <strong class="chaos-card-title">Restaurar MQTT</strong>
+              <span class="chaos-card-sub">Reativa Caminho A</span>
+            </div>
+          </div>
+
+          <!-- Falhar LoRa -->
+          <div class="chaos-action-card fail-card" id="card-fail-lora" onclick="executarAcaoTransporte('fail_lora')">
+            <div class="chaos-card-icon danger-icon">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                <line x1="1" y1="1" x2="23" y2="23" />
+                <path d="M4.93 4.93A10 10 0 0 0 2 12c0 2.76 1.12 5.26 2.93 7.07" />
+                <path d="M19.07 4.93A10 10 0 0 1 22 12c0 2.76-1.12 5.26-2.93 7.07" />
+                <circle cx="12" cy="12" r="2" />
+              </svg>
+            </div>
+            <div class="chaos-card-text">
+              <strong class="chaos-card-title">Falhar LoRa</strong>
+              <span class="chaos-card-sub">Desabilita rádio, isola fallback</span>
+            </div>
+          </div>
+
+          <!-- Restaurar LoRa -->
+          <div class="chaos-action-card restore-card" id="card-restore-lora" onclick="executarAcaoTransporte('restore_lora')">
+            <div class="chaos-card-icon success-icon">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                <path d="M4.93 4.93A10 10 0 0 0 2 12a10 10 0 0 0 10 10 10 10 0 0 0 7.07-2.93" />
+                <path d="M19.07 4.93A10 10 0 0 1 22 12" />
+                <circle cx="12" cy="12" r="2" />
+              </svg>
+            </div>
+            <div class="chaos-card-text">
+              <strong class="chaos-card-title">Restaurar LoRa</strong>
+              <span class="chaos-card-sub">Reativa Caminho B</span>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- 3. SEÇÃO DISPOSITIVOS -->
+      <div class="chaos-section">
+        <span class="chaos-section-label">DISPOSITIVOS</span>
+        <div class="chaos-cards-col">
+          <!-- Failover Dispositivo -->
+          <div class="chaos-action-card device-card" id="card-failover-dev" onclick="executarAcaoDispositivo('failover')">
+            <div class="chaos-card-icon device-icon">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                <rect x="4" y="4" width="16" height="16" rx="2" />
+                <rect x="9" y="9" width="6" height="6" />
+                <line x1="9" y1="1" x2="9" y2="4" />
+                <line x1="15" y1="1" x2="15" y2="4" />
+                <line x1="9" y1="20" x2="9" y2="23" />
+                <line x1="15" y1="20" x2="15" y2="23" />
+                <line x1="20" y1="9" x2="23" y2="9" />
+                <line x1="20" y1="14" x2="23" y2="14" />
+                <line x1="1" y1="9" x2="4" y2="9" />
+                <line x1="1" y1="14" x2="4" y2="14" />
+              </svg>
+            </div>
+            <div class="chaos-card-text">
+              <strong class="chaos-card-title">Failover Dispositivo</strong>
+              <span class="chaos-card-sub">Força transição de estado</span>
+            </div>
+          </div>
+
+          <!-- Overflow Buffer -->
+          <div class="chaos-action-card device-card" id="card-overflow-buffer" onclick="executarAcaoDispositivo('overflow')">
+            <div class="chaos-card-icon buffer-icon">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                <ellipse cx="12" cy="5" rx="9" ry="3" />
+                <path d="M21 12c0 1.66-4 3-9 3s-9-1.34-9-3" />
+                <path d="M3 5v14c0 1.66 4 3 9 3s9-1.34 9-3V5" />
+              </svg>
+            </div>
+            <div class="chaos-card-text">
+              <strong class="chaos-card-title">Overflow Buffer</strong>
+              <span class="chaos-card-sub">Enche buffer de store-and-forward</span>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- 4. SEÇÃO HISTÓRICO -->
+      <div class="chaos-section history-section">
+        <span class="chaos-section-label">HISTÓRICO</span>
+        <div class="chaos-history-list" id="chaos-history-list">
+          <div class="chaos-history-item">
+            <span class="chaos-dot"></span>
+            <span class="chaos-time">11:42</span>
+            <span class="chaos-action">fail_mqtt → OK</span>
+          </div>
+          <div class="chaos-history-item">
+            <span class="chaos-dot"></span>
+            <span class="chaos-time">11:42</span>
+            <span class="chaos-action">fail_lora → OK</span>
+          </div>
+        </div>
+      </div>
+    </div>
+  </aside>
+
+  <script src="app.js"></script>
+</body>
+
+</html>

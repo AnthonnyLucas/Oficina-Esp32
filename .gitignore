@@ -1,0 +1,17 @@
+# Arquivos do sistema
+Thumbs.db
+Thumbs.db:encryptable
+ehthumbs.db
+ehthumbs_vista.db
+*.stackdump
+[Dd]esktop.ini
+.DS_Store
+
+# IDEs e Editores
+.vscode/
+.idea/
+*.swp
+*~
+
+# Logs
+*.log

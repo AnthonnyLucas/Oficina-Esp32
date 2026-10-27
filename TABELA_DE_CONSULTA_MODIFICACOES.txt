@@ -1,0 +1,149 @@
+================================================================================
+          TABELA DE CONSULTA RÁPIDA: COMO MODIFICAR O CÓDIGO
+     Guia Prático Para Quem Nunca Programou na Vida — Oficina ESP32 (SNCT)
+================================================================================
+
+Este guia foi feito especialmente para você que nunca mexeu com programação.
+Se você precisa mudar a sua rede Wi-Fi, trocar um sensor de pino, mudar o tempo
+de envio ou alterar textos, basta consultar a tabela abaixo.
+
+--------------------------------------------------------------------------------
+⚠️ REGRAS DE OURO (LEIA ANTES DE MUDAR QUALQUER COISA):
+--------------------------------------------------------------------------------
+1. NUNCA apague as aspas duplas (" "). O texto sempre deve ficar dentro delas.
+   Exemplo CERTO:   const char* SSID = "MinhaRede";
+   Exemplo ERRADO:  const char* SSID = MinhaRede;
+
+2. NUNCA apague o ponto e vírgula (;) no final da linha. Ele avisa que a ordem acabou.
+   Exemplo CERTO:   #define DHTPIN 5
+   Exemplo CERTO:   int led = 26;
+   Exemplo ERRADO:  int led = 26
+
+3. MAIÚSCULAS e MINÚSCULAS importam! Se o código tem "WiFi", não escreva "wifi".
+
+
+================================================================================
+TABELA 1: MODIFICAÇÕES NO ESP32 COM MQTT (esp32_mqtt_dht22.ino)
+Arquivo: esp32_mqtt_dht22/esp32_mqtt_dht22.ino
+================================================================================
+
+O QUE VOCÊ QUER MUDAR?      | ONDE FICA NO ARQUIVO | CÓDIGO ORIGINAL                     | O QUE VOCÊ DEVE ESCREVER
+----------------------------+----------------------+-------------------------------------+-------------------------------------------------------
+Nome da sua rede Wi-Fi      | Linha 12 ou 13       | const char *SSID = "Mateus";        | const char *SSID = "O_NOME_DO_SEU_WIFI";
+                            |                      |                                     | (Coloque o nome exato do seu roteador ou celular)
+----------------------------+----------------------+-------------------------------------+-------------------------------------------------------
+Senha da sua rede Wi-Fi     | Linha 14             | const char *PASSWORD = "12345678";  | const char *PASSWORD = "SUA_SENHA_AQUI";
+                            |                      |                                     | (Coloque a senha do seu Wi-Fi entre as aspas)
+----------------------------+----------------------+-------------------------------------+-------------------------------------------------------
+Servidor Broker MQTT        | Linha 19 e 20        | const char *BROKER_MQTT =           | const char *BROKER_MQTT = "192.168.1.100";
+                            |                      |   "broker.hivemq.com";              | (Use o IP do seu computador ou outro broker público)
+----------------------------+----------------------+-------------------------------------+-------------------------------------------------------
+Porta do Broker MQTT        | Linha 21             | const int PORTA_MQTT = 1883;        | const int PORTA_MQTT = 1883;
+                            |                      |                                     | (Normalmente 1883 para conexões normais)
+----------------------------+----------------------+-------------------------------------+-------------------------------------------------------
+Tópico de Envio (Dados)     | Linha 22             | const char *TOPICO_TELEMETRIA =     | const char *TOPICO_TELEMETRIA = "minha/sala/dados";
+                            |                      |   "oficina/snct/dev01/telemetria";  | (Nome do canal onde as leituras serão enviadas)
+----------------------------+----------------------+-------------------------------------+-------------------------------------------------------
+Tópico de Comandos (LEDs)   | Linha 23             | const char *TOPICO_COMANDOS =       | const char *TOPICO_COMANDOS = "minha/sala/luz";
+                            |                      |   "oficina/snct/dev01/comandos";    | (Nome do canal que escuta comandos de ligar/desligar)
+----------------------------+----------------------+-------------------------------------+-------------------------------------------------------
+Pino do Sensor DHT          | Linha 27             | #define DHTPIN 5                    | #define DHTPIN 4
+                            |                      |                                     | (Troque 5 pelo número do pino GPIO que você ligou)
+----------------------------+----------------------+-------------------------------------+-------------------------------------------------------
+Modelo do Sensor DHT        | Linha 28             | #define DHTTYPE DHT22               | #define DHTTYPE DHT11
+                            |                      |                                     | (Use DHT11 para sensor azul, DHT22 para sensor branco)
+----------------------------+----------------------+-------------------------------------+-------------------------------------------------------
+Pino do LED de Status       | Linha 32             | const int PINO_LED_STATUS = 2;      | const int PINO_LED_STATUS = 2;
+                            |                      |                                     | (Pino 2 é a luz azul que já vem dentro do ESP32)
+----------------------------+----------------------+-------------------------------------+-------------------------------------------------------
+Pino do LED Externo         | Linha 33             | const int PINO_LED_VERDE = 26;      | const int PINO_LED_VERDE = 25;
+                            |                      |                                     | (Número do pino onde o positivo do LED está ligado)
+----------------------------+----------------------+-------------------------------------+-------------------------------------------------------
+Tempo entre Leituras        | Linha 39 e 40        | const unsigned long                 | const unsigned long INTERVALO_LEITURA = 5000;
+                            |                      |   INTERVALO_LEITURA = 2000;         | (2000 = 2 segundos; 5000 = 5 segundos)
+
+
+================================================================================
+TABELA 2: MODIFICAÇÕES NO ESP32 COM SERVIDOR WEB (DHT22.ino)
+Arquivo: DHT22/DHT22.ino
+================================================================================
+
+O QUE VOCÊ QUER MUDAR?      | ONDE FICA NO ARQUIVO | CÓDIGO ORIGINAL                     | O QUE VOCÊ DEVE ESCREVER
+----------------------------+----------------------+-------------------------------------+-------------------------------------------------------
+Nome da sua rede Wi-Fi      | Linha 6              | const char* SSID = "Mateus";        | const char* SSID = "O_NOME_DO_SEU_WIFI";
+----------------------------+----------------------+-------------------------------------+-------------------------------------------------------
+Senha da sua rede Wi-Fi     | Linha 7              | const char* PASSWORD = "12345678";  | const char* PASSWORD = "SUA_SENHA_AQUI";
+----------------------------+----------------------+-------------------------------------+-------------------------------------------------------
+Tipo do Sensor              | Linha 11             | #define TIPO DHT11                  | #define TIPO DHT22
+                            |                      |                                     | (Se o seu sensor for branco, use DHT22)
+----------------------------+----------------------+-------------------------------------+-------------------------------------------------------
+Nome escrito na página      | Linha 12             | const char* NOME_SENSOR = "DHT11";  | const char* NOME_SENSOR = "DHT22";
+----------------------------+----------------------+-------------------------------------+-------------------------------------------------------
+Pino onde o Sensor liga     | Linha 13             | #define DHTPino 5                   | #define DHTPino 18
+                            |                      |                                     | (Mude se você ligou o fio de dados em outro pino)
+----------------------------+----------------------+-------------------------------------+-------------------------------------------------------
+Limite de Alerta de Calor   | Linha 16             | const float LIMITE_CALOR = 30.0;    | const float LIMITE_CALOR = 28.5;
+                            |                      |                                     | (Se passar desse valor, a tela avisa que está quente)
+----------------------------+----------------------+-------------------------------------+-------------------------------------------------------
+Porta do Servidor Web       | Linha 20             | WebServer server(80);               | WebServer server(80);
+                            |                      |                                     | (Porta padrão de internet é 80, não precisa mexer)
+
+
+================================================================================
+TABELA 3: MODIFICAÇÕES NA DASHBOARD WEB
+Arquivos: dashboard_resilient_iot/app.js e style.css
+================================================================================
+
+O QUE VOCÊ QUER MUDAR?      | ARQUIVO E LOCAL      | CÓDIGO ORIGINAL                     | O QUE VOCÊ DEVE ESCREVER
+----------------------------+----------------------+-------------------------------------+-------------------------------------------------------
+IP padrão do ESP32 real     | app.js (Linha 146)   | ip: 'http://10.0.0.175',            | ip: 'http://192.168.1.50',
+                            |                      |                                     | (Coloque o IP que apareceu no monitor do seu ESP32)
+----------------------------+----------------------+-------------------------------------+-------------------------------------------------------
+Velocidade padrão do fluxo  | app.js (Linha 12)    | speed: 1,                           | speed: 2,   (Opções disponíveis: 1, 2 ou 10)
+----------------------------+----------------------+-------------------------------------+-------------------------------------------------------
+Capacidade do Buffer        | app.js (Linha 45)    | dev1Buffer: 0,                      | dev1Buffer: 50,  (Número de pacotes represados)
+----------------------------+----------------------+-------------------------------------+-------------------------------------------------------
+Distância entre os blocos   | style.css (Linha 369)| margin-bottom: 24px;                | margin-bottom: 32px;
+                            |                      |                                     | (Aumente o número se quiser mais espaço entre cards)
+----------------------------+----------------------+-------------------------------------+-------------------------------------------------------
+Cor da Rota MQTT            | style.css (Linha 22) | --color-mqtt: #10B981;              | --color-mqtt: #00FF88;  (Muda o verde para outra cor)
+----------------------------+----------------------+-------------------------------------+-------------------------------------------------------
+Cor da Rota LoRa            | style.css (Linha 24) | --color-lora: #F59E0B;              | --color-lora: #FFAA00;  (Muda o tom de âmbar/amarelo)
+
+
+================================================================================
+GUIA RÁPIDO: QUAIS FIOS LIGAR NO ESP32 E NO SENSOR DHT22?
+================================================================================
+
+O sensor DHT22 possui 3 pinos (na placa com plaquinha vermelha/azul) ou 4 pinos:
+
+    PINO DO SENSOR           | ONDE LIGAR NO ESP32
+    -------------------------+-----------------------------------------
+    VCC ou + (Alimentação)   | Pino 3V3 (ou VIN/5V dependendo do módulo)
+    GND ou - (Terra)         | Pino GND (Qualquer pino GND do ESP32)
+    DAT ou OUT ou S (Dados)  | Pino D5 (GPIO 5)
+
+DICA PARA O LED:
+    - Perna Maior do LED (+)  -> Resistor de 220 ou 330 Ohms -> Pino D26 (GPIO 26)
+    - Perna Menor do LED (-)  -> Pino GND do ESP32
+
+
+================================================================================
+RESOLUÇÃO DE PROBLEMAS MAIS COMUNS (QUANDO ALGO DÁ ERRADO):
+================================================================================
+
+1. O Wi-Fi fica mostrando apenas pontinhos (".....") e não conecta:
+   -> Verifique se a sua rede é de 2.4 GHz. O ESP32 NÃO funciona no Wi-Fi de 5 GHz!
+   -> Verifique se o nome da rede e a senha foram digitados exatamente iguais.
+
+2. Mensagem "Falha ao ler o sensor DHT!":
+   -> O fio de dados está folgado no pino D5 ou o sensor está sem alimentação (3V3/GND).
+   -> Verifique se o pino no código (#define DHTPIN 5) é o mesmo onde você conectou o fio.
+
+3. O Arduino IDE não encontra a porta serial (COM):
+   -> Verifique se o cabo USB é de DADOS e não apenas cabo de carregar celular.
+   -> Instale o driver do chip USB da sua placa (Driver CH340 ou CP2102).
+
+4. O upload para o ESP32 trava em "Connecting........_____.....":
+   -> Quando aparecer "Connecting...", segure o botão "BOOT" da placa ESP32 por 2 segundos
+      até a barra de progresso começar a subir e depois solte.
